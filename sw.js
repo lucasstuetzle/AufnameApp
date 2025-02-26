@@ -1,6 +1,6 @@
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open('my-cache-v2').then(cache => {  // Hier 'my-cache-v2' als Versionierung verwenden
+    caches.open('my-cache-v3').then(cache => {  // Hier 'my-cache-v2' als Versionierung verwenden
       return cache.addAll([
         'https://lucasstuetzle.github.io/AufnameApp/index.html',                // Index-Seite (oder Homepage)
         'https://lucasstuetzle.github.io/AufnameApp/css/style.css',             // CSS-Datei
@@ -22,7 +22,7 @@ self.addEventListener('activate', event => {
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames.map(cacheName => {
-          if (cacheName !== 'my-cache-v2') {  // Wenn der alte Cache gefunden wird
+          if (cacheName !== 'my-cache-v3') {  // Wenn der alte Cache gefunden wird
             return caches.delete(cacheName);  // Lösche den alten Cache
           }
         })
