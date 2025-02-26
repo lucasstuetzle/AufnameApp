@@ -14,6 +14,21 @@ self.addEventListener('install', event => {
   );
 });
 
+// Event listener für das "Aktivieren" des Service Workers
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheName !== 'my-cache-v2') {  // Wenn der alte Cache gefunden wird
+            return caches.delete(cacheName);  // Lösche den alten Cache
+          }
+        })
+      );
+    })
+  );
+});
+
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request).then(response => {
