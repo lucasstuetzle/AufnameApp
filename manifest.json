@@ -1,19 +1,12 @@
 {
-  "name": "Energieversorgung App",
-  "short_name": "Energieversorgung",
-  "description": "Eine App für die Energieversorgung",
-  "start_url": "/Übersicht.html",
-  "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#4CAF50",
   "icons": [
     {
-      "src": "Icons/icon-192x192.png",
+      "src": "/AufnameApp/Icons/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "Icons/icon-512x512.png",
+      "src": "/AufnameApp/Icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
