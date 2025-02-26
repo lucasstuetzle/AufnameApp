@@ -2,7 +2,7 @@
   "name": "Energieversorgung App",
   "short_name": "Energieversorgung",
   "description": "Eine App für die Energieversorgung",
-  "start_url": "./Übersicht.html",
+  "start_url": "/Übersicht.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#4CAF50",
