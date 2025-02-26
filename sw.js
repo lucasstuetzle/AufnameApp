@@ -2,7 +2,7 @@ self.addEventListener('install', event => {
   event.waitUntil(
     caches.open('my-cache').then(cache => {
       return cache.addAll([
-        '/',  // Stelle sicher, dass die root URL mit gecached wird
+        'https://lucasstuetzle.github.io/AufnameApp/',  // Stelle sicher, dass die root URL mit gecached wird
         '/index.html',
         '/Übersicht.html',
         '/css/style.css',
