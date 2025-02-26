@@ -1,16 +1,17 @@
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open('my-cache').then(cache => {
+    caches.open('my-cache-v2').then(cache => {  // Hier 'my-cache-v2' als Versionierung verwenden
       return cache.addAll([
-
         'https://lucasstuetzle.github.io/AufnameApp/index.html',                // Index-Seite (oder Homepage)
         'https://lucasstuetzle.github.io/AufnameApp/css/style.css',             // CSS-Datei
-        'https://lucasstuetzle.github.io/AufnameApp/js/Berechnung-kWh.js                  // JavaScript-Datei
-        'https://lucasstuetzle.github.io/AufnameApp/js/speicher.js                // JavaScript-Datei
+        'https://lucasstuetzle.github.io/AufnameApp/js/Berechnung-kWh.js',      // JavaScript-Datei
+        'https://lucasstuetzle.github.io/AufnameApp/js/speicher.js',            // JavaScript-Datei
         'https://lucasstuetzle.github.io/AufnameApp/manifest.json',             // Manifest-Datei
         'https://lucasstuetzle.github.io/AufnameApp/Icons/icon-192x192.png',    // 192px Icon (mit korrektem Großbuchstaben "Icons")
-        'https://lucasstuetzle.github.io/AufnameApp/Icons/icon-192x192.png'     // 512px Icon (mit korrektem Großbuchstaben "Icons")
+        'https://lucasstuetzle.github.io/AufnameApp/Icons/icon-512x512.png'     // 512px Icon (mit korrektem Großbuchstaben "Icons")
       ]);
+    }).catch(error => {
+      console.log('Fehler beim Caching:', error);
     })
   );
 });
@@ -30,10 +31,11 @@ self.addEventListener('activate', event => {
   );
 });
 
+// Fetch Event: Wenn der User eine Seite aufruft, wird versucht, sie aus dem Cache zu laden, falls vorhanden
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request).then(response => {
-      return response || fetch(event.request);
+      return response || fetch(event.request);  // Wenn nicht im Cache, dann über das Netzwerk anfordern
     })
   );
 });
