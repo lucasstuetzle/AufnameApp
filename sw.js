@@ -1,6 +1,6 @@
 const CACHE_NAME = 'my-cache-v1'; // Version des Caches
 const CACHE_URLS = [
-  './Energieversogung.html',
+  './Übersicht.html',
   './css/style.css',
   './icons/icon-192x192.png',
   './icons/icon-512x512.png',
@@ -49,7 +49,7 @@ self.addEventListener('fetch', function(event) {
       // Wenn der Netzwerkaufruf fehlschlägt (z.B. bei Offline-Nutzung), hole die Datei aus dem Cache
       return caches.match(event.request).then(function(response) {
         // Rückfall: Wenn die Datei nicht im Cache vorhanden ist, zurück zur Startseite
-        return response || caches.match('./Energieversogung.html');
+        return response || caches.match('./Übersicht.html');
       });
     })
   );
