@@ -24,7 +24,7 @@ self.addEventListener('activate', event => {
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames.map(cacheName => {
-          if (cacheName !== CACHE_NAME) {  // Lösche alte Caches, wenn sie nicht dem aktuellen Namen entsprechen
+          if (cacheName == CACHE_NAME) {  // Lösche alte Caches, wenn sie nicht dem aktuellen Namen entsprechen
             console.log(`Service Worker: Lösche alten Cache ${cacheName}`);
             return caches.delete(cacheName);  // Lösche den alten Cache
           }
