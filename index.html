@@ -57,10 +57,10 @@
 	
 	<script src="js/Berechnung-kWh.js"></script> <!-- Zugriff auf Funktion Energieberechnung  -->
 	<script src="js/speicher.js"></script> <!-- JavaScript für Speicherung -->
+
 	
-<script>
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js')
+    navigator.serviceWorker.register('/sw.js') // Beachte das führende "/"
     .then(() => console.log('Service Worker registriert'))
     .catch(error => console.log('Service Worker Registrierung fehlgeschlagen:', error));
 }
