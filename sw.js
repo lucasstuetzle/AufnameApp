@@ -4,6 +4,7 @@ const CACHE_NAME = 'my-cache';
 // INSTALL-Ereignis: Wird ausgeführt, wenn der Service Worker installiert wird.
 // Hier werden zunächst einige essentielle Dateien vorab in den Cache geladen.
 self.addEventListener('install', event => {
+  console.log('Service Worker: Installationsprozess gestartet');
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
       console.log('Service Worker: Pre-caching der Ressourcen');
@@ -23,6 +24,7 @@ self.addEventListener('install', event => {
 // AKTIVIEREN-Ereignis: Wird ausgeführt, wenn der Service Worker aktiviert wird.
 // Hier werden alle Caches gelöscht, die nicht dem aktuellen CACHE_NAME entsprechen.
 self.addEventListener('activate', event => {
+  console.log('Service Worker: Aktiviert und bereit zur Nutzung');
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
