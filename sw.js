@@ -2,11 +2,12 @@ self.addEventListener('install', event => {
   event.waitUntil(
     caches.open('my-cache').then(cache => {
       return cache.addAll([
-        '/',                         // Startseite, z.B. index.html
-        'index.html',                // Index-Seite (oder Homepage)
-        'css/style.css',             // CSS-Datei
-        'js/app.js',                 // JavaScript-Datei
-        'manifest.json',             // Manifest-Datei
+
+        'https://lucasstuetzle.github.io/AufnameApp/index.html',                // Index-Seite (oder Homepage)
+        'https://lucasstuetzle.github.io/AufnameApp/css/style.css',             // CSS-Datei
+        'https://lucasstuetzle.github.io/AufnameApp/js/Berechnung-kWh.js                  // JavaScript-Datei
+        'https://lucasstuetzle.github.io/AufnameApp/js/speicher.js                // JavaScript-Datei
+        'https://lucasstuetzle.github.io/AufnameApp/manifest.json',             // Manifest-Datei
         'https://lucasstuetzle.github.io/AufnameApp/Icons/icon-192x192.png',    // 192px Icon (mit korrektem Großbuchstaben "Icons")
         'https://lucasstuetzle.github.io/AufnameApp/Icons/icon-192x192.png'     // 512px Icon (mit korrektem Großbuchstaben "Icons")
       ]);
