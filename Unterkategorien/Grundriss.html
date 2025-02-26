@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF als Bild bearbeiten</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+    <style>
+        #toolbar {
+            margin-bottom: 10px;
+        }
+        #canvas-container {
+            position: relative;
+            border: 1px solid black;
+            display: inline-block;
+        }
+        canvas {
+            cursor: crosshair;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>PDF hochladen und bearbeiten</h1>
+
+    <!-- Toolbar -->
+    <div id="toolbar">
+        <input type="file" id="pdf-upload" accept="application/pdf">
+        <button onclick="enableCrop()">📏 Zuschneiden</button>
+        <button id="acceptCrop" onclick="applyCrop()" style="display:none;">✅ Zuschneiden annehmen</button>
+        <button onclick="enableDraw()">🖊️ Zeichnen</button>
+    </div>
+
+    <!-- Container für das Bild -->
+    <div id="canvas-container">
+        <canvas id="pdf-canvas"></canvas>
+    </div>
+
+    <script>
+        let cropper;
+        let isDrawing = false;
+        let ctx;
+        let startX, startY;
+
+        document.getElementById('pdf-upload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file && file.type === 'application/pdf') {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const pdfData = new Uint8Array(e.target.result);
+                    pdfjsLib.getDocument(pdfData).promise.then(pdf => {
+                        pdf.getPage(1).then(page => {
+                            const scale = 2;
+                            const viewport = page.getViewport({ scale });
+                            const canvas = document.getElementById('pdf-canvas');
+                            ctx = canvas.getContext('2d');
+                            canvas.width = viewport.width;
+                            canvas.height = viewport.height;
+                            
+                            const renderContext = {
+                                canvasContext: ctx,
+                                viewport: viewport
+                            };
+                            page.render(renderContext).promise.then(() => {
+                                resetCropper();
+                            });
+                        });
+                    });
+                };
+                reader.readAsArrayBuffer(file);
+            } else {
+                alert('Bitte eine gültige PDF-Datei hochladen.');
+            }
+        });
+
+        function enableCrop() {
+            resetCropper();
+            const canvas = document.getElementById('pdf-canvas');
+            cropper = new Cropper(canvas, {
+                viewMode: 1,
+                autoCropArea: 1,
+                movable: true,
+                zoomable: false,
+                scalable: false
+            });
+            document.getElementById('acceptCrop').style.display = "inline-block";
+        }
+
+        function applyCrop() {
+            if (cropper) {
+                const croppedCanvas = cropper.getCroppedCanvas();
+                const canvas = document.getElementById('pdf-canvas');
+                const ctx = canvas.getContext('2d');
+
+                canvas.width = croppedCanvas.width;
+                canvas.height = croppedCanvas.height;
+                ctx.drawImage(croppedCanvas, 0, 0);
+                
+                cropper.destroy();
+                cropper = null;
+                document.getElementById('acceptCrop').style.display = "none";
+            }
+        }
+
+        function enableDraw() {
+            resetCropper();
+            const canvas = document.getElementById('pdf-canvas');
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+        }
+
+        function startDrawing(event) {
+            isDrawing = true;
+            ctx.strokeStyle = "red";
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(event.offsetX, event.offsetY);
+        }
+
+        function draw(event) {
+            if (!isDrawing) return;
+            ctx.lineTo(event.offsetX, event.offsetY);
+            ctx.stroke();
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        function resetCropper() {
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+            const canvas = document.getElementById('pdf-canvas');
+            canvas.removeEventListener('mousedown', startDrawing);
+            canvas.removeEventListener('mousemove', draw);
+            canvas.removeEventListener('mouseup', stopDrawing);
+        }
+
+    </script>
+	
+	
+	
+
+<p>
+<button onclick="window.location.href='../Energieversorgung.html'">Zurück</button>
+</body>
+</html>
+
+
+
