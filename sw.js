@@ -2,17 +2,14 @@ self.addEventListener('install', event => {
   event.waitUntil(
     caches.open('my-cache').then(cache => {
       return cache.addAll([
-        'https://lucasstuetzle.github.io/AufnameApp/',  // Stelle sicher, dass die root URL mit gecached wird
-        '/index.html',
-        '/Übersicht.html',
-        '/css/style.css',
-        '/js/app.js',
-        '/manifest.json',
-        '/Icons/icon-192x192.png',
-        '/Icons/icon-512x512.png'
+        '/',                         // Startseite, z.B. index.html
+        'index.html',                // Index-Seite (oder Homepage)
+        'css/style.css',             // CSS-Datei
+        'js/app.js',                 // JavaScript-Datei
+        'manifest.json',             // Manifest-Datei
+        'Icons/icon-192x192.png',    // 192px Icon (mit korrektem Großbuchstaben "Icons")
+        'Icons/icon-512x512.png'     // 512px Icon (mit korrektem Großbuchstaben "Icons")
       ]);
-    }).catch(error => {
-      console.error('Cache konnte nicht erstellt werden:', error);
     })
   );
 });
@@ -21,9 +18,7 @@ self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request).then(response => {
       return response || fetch(event.request);
-    }).catch(error => {
-      console.error('Fehler beim Abrufen der Datei:', error);
-      return new Response('Offline, aber Fehler beim Abrufen.');
     })
   );
 });
+
