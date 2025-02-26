@@ -1,4 +1,4 @@
-const CACHE_NAME = 'my-cache';  // Einfacher Name, ohne Versionierung
+const CACHE_NAME = 'my-cache'; // Name des Caches
 
 // Installieren und Ressourcen in den Cache hinzufügen
 self.addEventListener('install', event => {
@@ -18,15 +18,15 @@ self.addEventListener('install', event => {
   );
 });
 
-// Aktivieren des Service Workers und Entfernen alter Caches
+// Aktivieren des Service Workers und Entfernen alter Caches (Optional)
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames.map(cacheName => {
-          if (cacheName == CACHE_NAME) {  // Lösche alte Caches, wenn sie nicht dem aktuellen Namen entsprechen
+          if (cacheName !== CACHE_NAME) { // Löscht alte Caches
             console.log(`Service Worker: Lösche alten Cache ${cacheName}`);
-            return caches.delete(cacheName);  // Lösche den alten Cache
+            return caches.delete(cacheName);
           }
         })
       );
@@ -34,12 +34,16 @@ self.addEventListener('activate', event => {
   );
 });
 
-// Fetch-Ereignis und Rückgabe von gecachten Inhalten
+// Netzwerk bevorzugen, Cache nur als Fallback
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request).then(response => {
-      // Falls die Anfrage im Cache gefunden wurde, gebe sie zurück
-      return response || fetch(event.request);  // Ansonsten lade sie aus dem Netzwerk
-    })
+    fetch(event.request) // Immer zuerst aus dem Internet laden
+      .then(response => {
+        return caches.open(CACHE_NAME).then(cache => {
+          cache.put(event.request, response.clone()); // Datei im Cache speichern
+          return response; // Rückgabe der aktuellen Datei aus dem Internet
+        });
+      })
+      .catch(() => caches.match(event.request)) // Falls kein Internet, nutze Cache als Fallback
   );
 });
