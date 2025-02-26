@@ -7,8 +7,8 @@ self.addEventListener('install', event => {
         'css/style.css',             // CSS-Datei
         'js/app.js',                 // JavaScript-Datei
         'manifest.json',             // Manifest-Datei
-        'Icons/icon-192x192.png',    // 192px Icon (mit korrektem Großbuchstaben "Icons")
-        'Icons/icon-512x512.png'     // 512px Icon (mit korrektem Großbuchstaben "Icons")
+        'https://lucasstuetzle.github.io/AufnameApp/Icons/icon-192x192.png',    // 192px Icon (mit korrektem Großbuchstaben "Icons")
+        'https://lucasstuetzle.github.io/AufnameApp/Icons/icon-192x192.png'     // 512px Icon (mit korrektem Großbuchstaben "Icons")
       ]);
     })
   );
