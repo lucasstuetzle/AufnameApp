@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="/AufnameApp/css/style.css"> <!-- Gleiche CSS Datei -->
+	<script src="/AufnameApp/js/speicher.js"></script>
+	
+	<title>Energieverteilung df</title>
+
+
+</head>
+<body>
+
+    <label for="standortName">Standort Name:</label>
+    <input type="text" id="standortName" placeholder="Standort eingeben">
+
+    <label for="standortAdresse">Adresse:</label>
+    <input type="text" id="standortAdresse" placeholder="Adresse eingeben">
+
+    <label for="standortBemerkung">Bemerkung:</label>
+    <input type="text" id="standortBemerkung" placeholder="Bemerkung hinzufügen">
+
+<button onclick="window.location.href='../index.html'">Zurück</button>
+	
+</body>
+</html>
