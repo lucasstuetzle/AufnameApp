@@ -45,14 +45,18 @@ button {
 }
 
 	.side-button:nth-of-type(1) {
-	top: 70%;   /* 20% von der Höhe der Seite */
+	top: 50%;   /* 20% von der Höhe der Seite */
 	}
 	.side-button:nth-of-type(2) {
-	top: 80%;   /* 50% von der Höhe der Seite */
+	top: 60%;   /* 50% von der Höhe der Seite */
 	}
 
 	.side-button:nth-of-type(3) {
-	top: 90%;   /* 50% von der Höhe der Seite */
+	top: 70%;   /* 50% von der Höhe der Seite */
+	}
+
+	.side-button:nth-of-type(4) {
+	top: 80%;   /* 50% von der Höhe der Seite */
 	}
 
 	.side-button:hover {
