@@ -3,6 +3,7 @@ body {
 	font-family: Calibri, sans-serif; /* Setzt die Schriftart */
 	text-align: center; /* Zentriert den Inhalt */
 }
+
 /* Stil für das Formular */
 form {
 	max-width: 400px; /* Maximale Breite des Formulars */
@@ -11,10 +12,6 @@ form {
 	border: 1px solid #ddd; /* Rahmen um das Formular */
 	border-radius: 5px; /* Abgerundete Ecken */
 }
-
-/* h1 { */
-	/* color: red; */
-/* } */
 
 /* Stil für Eingabefelder, Auswahlmenüs und Button */
 input, select, button {
@@ -25,45 +22,41 @@ input, select, button {
 	margin-bottom: 10px; /* Abstand zwischen den Feldern */
 	box-sizing: border-box; /* Sorgt dafür, dass padding und border in der Gesamtgröße enthalten sind */
 }
+
 /* Stil für den Button */
 button {
 	height: 40px; /* Höhere Schaltfläche für bessere Bedienbarkeit */
 }
 
+/* Container für die Buttons */
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;  /* Zentriert vertikal */
+    align-items: center;      /* Zentriert horizontal */
+    height: 100vh;            /* Volle Bildschirmhöhe */
+    gap: 20px;                /* Abstand zwischen den Buttons */
+}
+
+/* Stil für die Buttons */
 .side-button {
-    position: fixed;  /* Fixiert den Button an einer Position */
-    left: 100px;       /* Abstand vom linken Rand */
-	width: 250px;
-    /* top: 50%;         /* Vertikal in der Mitte */ */
-    transform: translateY(-50%); /* Genau zentrieren */
-    padding: 10px 20px;
-    background-color: #007BFF; /* Blaue Farbe */
-    color: white;
+    width: 200px;  /* Breite der Buttons */
+    padding: 10px;
+    font-size: 16px;
+    text-align: center;
     border: none;
+    background-color: #007bff;
+    color: white;
     border-radius: 5px;
     cursor: pointer;
 }
 
-	.side-button:nth-of-type(1) {
-	top: 25%;   
-	}
-	.side-button:nth-of-type(2) {
-	top: 50%;   
-	}
+/* Hover-Effekt für Buttons */
+.side-button:hover {
+    background-color: #0056b3;
+}
 
-	.side-button:nth-of-type(3) {
-	top: 75%; 
-	}
-
-	.side-button:nth-of-type(4) {
-	top: 99%;   
-	}
-
-	.side-button:hover {
-		background-color: #0056b3; /* Dunkleres Blau beim Hover */
-	}
-
-
+/* Canvas-Stil */
 #canvas-container {
     max-width: 100%; /* Maximale Breite auf 100% des Containers setzen */
     max-height: 90vh; /* Maximale Höhe auf 90% der Ansichtshöhe setzen */
@@ -72,6 +65,7 @@ button {
     justify-content: center; /* Zentriert den Canvas horizontal */
     align-items: center; /* Zentriert den Canvas vertikal */
 }
+
 canvas {
     width: 100%;
     height: auto;
