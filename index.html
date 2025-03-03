@@ -58,6 +58,37 @@
 	<script src="js/Berechnung-kWh.js"></script> <!-- Zugriff auf Funktion Energieberechnung  -->
 	<script src="js/speicher.js"></script> <!-- JavaScript für Speicherung -->
 
+
+<button id="update-btn" style="position: fixed; bottom: 20px; right: 20px; padding: 10px; background-color: blue; color: white; border: none; border-radius: 5px; cursor: pointer;">
+  Aktualisieren 🔄
+</button>
+
+<script>
+  document.getElementById('update-btn').addEventListener('click', () => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistration().then(reg => {
+        if (reg && reg.waiting) {
+          // Falls ein neuer Service Worker wartet, diesen aktivieren
+          reg.waiting.postMessage({ action: 'skipWaiting' });
+        } else {
+          // Falls kein neuer SW vorhanden, einfach Seite neu laden
+          window.location.reload();
+        }
+      });
+    } else {
+      window.location.reload(); // Falls kein SW, einfach neuladen
+    }
+  });
+
+  // Falls der neue Service Worker aktiviert wird, Seite neuladen
+  if (navigator.serviceWorker) {
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      window.location.reload();
+    });
+  }
+</script>
+
+	
 	
 <script>
 if ('serviceWorker' in navigator) {
