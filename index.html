@@ -12,9 +12,24 @@
 </head>
 	
 <body>
-    
-	<h1>sdfdafv adfds!</h1>
-	<p>
+
+    <h1>Aufnahme-App</h1>
+<p>
+    <label for="standortName">Standort Name:</label>
+    <input type="text" id="standortName" placeholder="Standort eingeben">
+
+    <label for="standortAdresse">Adresse:</label>
+    <input type="text" id="standortAdresse" placeholder="Adresse eingeben">
+
+    <label for="standortBemerkung">Bemerkung:</label>
+    <input type="text" id="standortBemerkung" placeholder="Bemerkung hinzufügen">
+
+    <!-- Buttons für die Standort-Verwaltung -->
+    <button id="newLocation">📌 Neuen Standort erstellen</button>
+    <button id="editLocation" onclick="document.getElementById('uploadJson').click()">✏️ Standort bearbeiten</button>
+
+    <!-- Unsichtbarer File-Input für den JSON-Upload -->
+    <input type="file" id="uploadJson" accept=".json" style="display: none;">
 		
 	<!-- Button zur Unterseite -->
 	<button class="side-button" onclick="window.location.href='Unterkategorien/Grundriss.html'">Grundriss</button> 
