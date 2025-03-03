@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const fields = ["location", "supply", "capacity", "time", "energy", "author", "circuit"];
+    const fields = ["standortName", "standortAdresse", "standortBemerkung", "location", "supply", "capacity", "time", "energy", "author", "circuit"];
 
     // Felder aus dem sessionStorage befüllen und Änderungen speichern
     fields.forEach(field => {
