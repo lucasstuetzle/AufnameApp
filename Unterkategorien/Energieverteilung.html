@@ -10,11 +10,10 @@
 
 	<script src="/AufnameApp/js/Berechnung-kWh.js"></script> <!-- Zugriff auf Funktion Energieberechnung  -->
 </head>
-	
 <body>
 
 <form id="energyForm">
-        <!-- Eingabefeld für den Standort -->
+	<!-- Eingabefeld für den Standort -->
         <label for="location">Standort:</label>
         <input type="text" id="location" required>
 
@@ -29,13 +28,12 @@
         </select>
 
         <!-- Eingabefeld für die Kapazität in kW -->
-		<label for="capacity">Kapazität (kW):</label>
-		<input type="number" id="capacity" required oninput="calculateEnergy()">
-
+	<label for="capacity">Kapazität (kW):</label>
+	<input type="number" id="capacity" required oninput="calculateEnergy()">
 
         <!-- Eingabefeld für die Zeitdauer in Stunden -->
-		<label for="time">Zeitdauer (h):</label>
-		<input type="number" id="time" required oninput="calculateEnergy()">
+	<label for="time">Zeitdauer (h):</label>
+	<input type="number" id="time" required oninput="calculateEnergy()">
 
         <!-- Berechnetes Feld für die Energiemenge -->
         <label for="energy">Energiemenge (kWh):</label>
@@ -46,10 +44,8 @@
         <input type="text" id="author" required>
     </form>
 
-	    <button onclick="window.location.href='../index.html'">Zurück</button>
+<button onclick="window.location.href='../index.html'">Zurück</button>
 	
-
-
 </body>
 </html>
 
