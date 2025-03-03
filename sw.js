@@ -10,6 +10,9 @@ self.addEventListener('install', event => {
       console.log('Service Worker: Pre-caching der Ressourcen');
       return cache.addAll([
         'https://lucasstuetzle.github.io/AufnameApp/index.html',              // Startseite
+        'https://lucasstuetzle.github.io/AufnameApp/Energieverteilung.html',    
+        'https://lucasstuetzle.github.io/AufnameApp/Grundriss.html',          
+        'https://lucasstuetzle.github.io/AufnameApp/Hausanschluss.html',          
         'https://lucasstuetzle.github.io/AufnameApp/css/style.css',            // CSS-Datei
         'https://lucasstuetzle.github.io/AufnameApp/js/Berechnung-kWh.js',     // JavaScript-Datei
         'https://lucasstuetzle.github.io/AufnameApp/js/speicher.js',           // JavaScript-Datei
