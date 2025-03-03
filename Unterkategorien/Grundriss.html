@@ -1,25 +1,29 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF als Bild bearbeiten</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
-    <style>
-        #toolbar {
-            margin-bottom: 10px;
-        }
-        #canvas-container {
-            position: relative;
-            border: 1px solid black;
-            display: inline-block;
-        }
-        canvas {
-            cursor: crosshair;
-        }
-    </style>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="../css/style.css"> <!-- Gleiche CSS Datei -->
+	<script src="/AufnameApp/js/speicher.js"></script>
+	
+	<title>Grundriss</title>
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+	<style>
+		#toolbar {
+		    margin-bottom: 10px;
+		}
+		#canvas-container {
+		    position: relative;
+		    border: 1px solid black;
+		    display: inline-block;
+		}
+		canvas {
+		    cursor: crosshair;
+		}
+	</style>
 </head>
 <body>
 
