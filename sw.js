@@ -61,3 +61,22 @@ self.addEventListener('fetch', event => {
       })
   );
 });
+
+self.addEventListener('activate', event => {
+    console.log('Service Worker: Aktiviert und überprüft auf Updates');
+
+    event.waitUntil(
+        caches.keys().then(cacheNames => {
+            return Promise.all(
+                cacheNames.map(cacheName => {
+                    if (cacheName !== CACHE_NAME) {
+                        console.log(`Service Worker: Lösche alten Cache ${cacheName}`);
+                        return caches.delete(cacheName);
+                    }
+                })
+            );
+        }).then(() => {
+            return self.clients.claim();  // ⚡ Aktiviert den neuen Service Worker sofort
+        })
+    );
+});
