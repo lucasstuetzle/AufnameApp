@@ -1,0 +1,32 @@
+ <form id="energyForm">
+        <!-- Eingabefeld für den Standort -->
+        <label for="location">Standort:</label>
+        <input type="text" id="location" required>
+
+        <!-- Auswahlfeld für die Energiequelle -->
+        <label for="supply">Energiequelle:</label>
+        <select id="supply">
+            <option>Netzstrom</option>
+            <option>Solar</option>
+            <option>Wind</option>
+            <option>Wasserkraft</option>
+            <option>Batteriespeicher</option>
+        </select>
+
+        <!-- Eingabefeld für die Kapazität in kW -->
+		<label for="capacity">Kapazität (kW):</label>
+		<input type="number" id="capacity" required oninput="calculateEnergy()">
+
+
+        <!-- Eingabefeld für die Zeitdauer in Stunden -->
+		<label for="time">Zeitdauer (h):</label>
+		<input type="number" id="time" required oninput="calculateEnergy()">
+
+        <!-- Berechnetes Feld für die Energiemenge -->
+        <label for="energy">Energiemenge (kWh):</label>
+        <input type="text" id="energy" readonly>
+
+        <!-- Eingabefeld für den Autor -->
+        <label for="author">Autor</label>
+        <input type="text" id="author" required>
+    </form>
