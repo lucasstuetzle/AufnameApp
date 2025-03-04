@@ -22,19 +22,20 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Event-Listener für das Speichern der JSON-Datei
+    // Event-Listener für das Speichern als JSON
     document.getElementById("newLocation").addEventListener("click", function () {
         const data = {};
 
-        // Werte aus den Feldern sammeln
+        // Alle Werte aus den Feldern holen und in das JSON-Objekt schreiben
         fields.forEach(field => {
             const fieldElement = document.getElementById(field);
             if (fieldElement) {
-                data[field] = fieldElement.value;
+                data[field] = fieldElement.value || ""; // Falls leer, wird ein leerer String gespeichert
             }
         });
 
-        // JSON-Datei erstellen und zum Download anbieten
+        console.log("Erstellte JSON-Daten:", data); // Debugging
+
         const jsonData = JSON.stringify(data, null, 2);
         const blob = new Blob([jsonData], { type: "application/json" });
         const a = document.createElement("a");
@@ -43,7 +44,5 @@ document.addEventListener("DOMContentLoaded", function () {
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-
-        console.log("JSON-Datei wurde erstellt und heruntergeladen.");
     });
 });
