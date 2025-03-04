@@ -1,7 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const fields = ["standortName", "standortAdresse", "standortBemerkung", "location", "supply", "capacity", "time", "energy", "author", "circuit"];
-
-    // Felder aus dem sessionStorage befüllen und Änderungen speichern
+    // Verwende die fields-Konstante aus fields.js
     fields.forEach(field => {
         const fieldElement = document.getElementById(field);
         if (fieldElement) {
@@ -21,5 +19,4 @@ document.addEventListener("DOMContentLoaded", function () {
             console.warn(`Feld nicht gefunden: ${field}`);
         }
     });
-
 });
