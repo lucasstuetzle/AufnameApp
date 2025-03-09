@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
     fields.forEach(field => {
         const fieldElement = document.getElementById(field);
         if (fieldElement) {
-            console.log(`Feld gefunden: ${field}`);
+
 
             // Falls ein gespeicherter Wert existiert, lade ihn
             if (sessionStorage.getItem(field)) {
