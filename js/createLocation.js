@@ -1,49 +1,50 @@
 document.addEventListener("DOMContentLoaded", function () {
     const newLocationButton = document.getElementById("newLocation");
 
-    console.log("fields:", fields);  // Prüfen, ob fields existiert und Daten enthält
-
-
     if (newLocationButton) {
         newLocationButton.addEventListener("click", function () {
             const data = {};
-            let allFieldsFilled = true;  // Eine Flagge, um zu überprüfen, ob alle Felder befüllt sind
 
             // Überprüfe die Felder und fülle die Daten
             fields.forEach(field => {
                 const fieldElement = document.getElementById(field);
+
                 if (fieldElement) {
                     const value = fieldElement.value;
                     if (value) {
-                        data[field] = value;  // Füge das Feld und seinen Wert hinzu
+                        data[field] = value; // Füge das Feld und seinen Wert hinzu
                     } else {
-                        allFieldsFilled = false;  // Setze Flag auf false, wenn ein Feld leer ist
+                        console.warn(`Feld "${field}" ist leer.`);
                     }
                 } else {
-                    console.warn(`Feld nicht gefunden: ${field}`);  // Debugging, wenn ein Feld nicht gefunden wird
+                    console.warn(`Feld nicht gefunden: ${field}`);
                 }
             });
 
             // Debugging: Überprüfe, welche Daten in 'data' gespeichert sind
             console.log("Daten vor JSON-Erstellung:", data);
 
-            if (allFieldsFilled) {
-                // JSON-Daten erstellen
-                const jsonData = JSON.stringify(data, null, 2);
-
-                // JSON-Datei erstellen und herunterladen
-                const blob = new Blob([jsonData], { type: "application/json" });
-                const a = document.createElement("a");
-                a.href = URL.createObjectURL(blob);
-                a.download = "standort.json";  // Dateiname für die heruntergeladene Datei
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a); // A-Tag nach dem Klick entfernen
-            } else {
-                alert("Bitte füllen Sie alle Felder aus, bevor Sie speichern.");
-            }
+            // JSON-Datei erstellen und zum Download anbieten
+            downloadJSON(data, "speicher.json");
         });
     } else {
-        console.warn("Button für 'Neuen Standort erstellen' nicht gefunden");
+        console.error('Button mit der ID "newLocation" nicht gefunden.');
     }
 });
+
+// Funktion zum Erstellen und Herunterladen der JSON-Datei
+function downloadJSON(data, filename) {
+    const jsonStr = JSON.stringify(data, null, 2);
+    const blob = new Blob([jsonStr], { type: "application/json" });
+
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    // Speicher freigeben
+    URL.revokeObjectURL(a.href);
+}
