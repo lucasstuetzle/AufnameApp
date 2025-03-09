@@ -1,6 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
     const newLocationButton = document.getElementById("newLocation");
 
+    console.log("fields:", fields);  // Prüfen, ob fields existiert und Daten enthält
+
+
     if (newLocationButton) {
         newLocationButton.addEventListener("click", function () {
             const data = {};
