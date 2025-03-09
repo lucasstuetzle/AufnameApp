@@ -15,7 +15,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 sessionStorage.setItem(field, this.value);
                 console.log(`Gespeichert: ${field} = ${this.value}
 
-                console.log(sessionStorage);
             });
         } else {
             console.warn(`Feld nicht gefunden: ${field}`);
