@@ -1,50 +1,48 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const newLocationButton = document.getElementById("newLocation");
+    const newLocationButton = document.getElementById("newLocationButton");
 
-    if (newLocationButton) {
-        newLocationButton.addEventListener("click", function () {
-            const data = {};
+    if (!newLocationButton) {
+        console.error("Button 'newLocationButton' nicht gefunden.");
+        return;
+    }
 
-            // Überprüfe die Felder und fülle die Daten
-            fields.forEach(field => {
-                const fieldElement = document.getElementById(field);
+    newLocationButton.addEventListener("click", function () {
+        // Überprüfen, ob 'fields' definiert ist
+        if (typeof fields === "undefined") {
+            console.error("'fields' ist nicht definiert.");
+            return;
+        }
 
-                if (fieldElement) {
-                    const value = fieldElement.value;
-                    if (value) {
-                        data[field] = value; // Füge das Feld und seinen Wert hinzu
-                    } else {
-                        console.warn(`Feld "${field}" ist leer.`);
-                    }
-                } else {
-                    console.warn(`Feld nicht gefunden: ${field}`);
-                }
-            });
+        const data = {};
 
-            // Debugging: Überprüfe, welche Daten in 'data' gespeichert sind
-            console.log("Daten vor JSON-Erstellung:", data);
-
-            // JSON-Datei erstellen und zum Download anbieten
-            downloadJSON(data, "speicher.json");
+        // Durch die 'fields' iterieren und Werte aus 'sessionStorage' abrufen
+        fields.forEach(field => {
+            const value = sessionStorage.getItem(field);
+            if (value !== null && value.trim() !== "") {
+                data[field] = value.trim(); // Nur nicht-leere Werte speichern
+            }
         });
-    } else {
-        console.error('Button mit der ID "newLocation" nicht gefunden.');
+
+        // Sicherstellen, dass Daten vorhanden sind
+        if (Object.keys(data).length === 0) {
+            alert("Keine Daten zum Speichern vorhanden.");
+            return;
+        }
+
+        // JSON-Datei zum Download anbieten
+        downloadJSON(data, "speicher.json");
+    });
+
+    // Funktion zum Erstellen und Herunterladen der JSON-Datei
+    function downloadJSON(data, filename) {
+        const jsonStr = JSON.stringify(data, null, 2);
+        const blob = new Blob([jsonStr], { type: "application/json" });
+
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
     }
 });
-
-// Funktion zum Erstellen und Herunterladen der JSON-Datei
-function downloadJSON(data, filename) {
-    const jsonStr = JSON.stringify(data, null, 2);
-    const blob = new Blob([jsonStr], { type: "application/json" });
-
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = filename;
-
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-
-    // Speicher freigeben
-    URL.revokeObjectURL(a.href);
-}
