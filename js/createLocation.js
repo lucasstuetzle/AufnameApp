@@ -46,3 +46,44 @@ document.addEventListener("DOMContentLoaded", function () {
         document.body.removeChild(a);
     }
 });
+
+const loadButton = document.getElementById("loadLocationButton");
+const fileInput = document.getElementById("uploadJSON");
+
+if (loadButton && fileInput) {
+
+    loadButton.addEventListener("click", () => {
+        fileInput.click(); // Öffnet Dateiauswahl
+    });
+
+    fileInput.addEventListener("change", function (event) {
+        const file = event.target.files[0];
+
+        if (!file) return;
+
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+            try {
+                const data = JSON.parse(e.target.result);
+
+                Object.keys(data).forEach(key => {
+                    const element = document.getElementById(key);
+                    if (element) {
+                        element.value = data[key];
+
+                        // optional auch wieder in sessionStorage speichern
+                        sessionStorage.setItem(key, data[key]);
+                    }
+                });
+
+                alert("Standort erfolgreich geladen!");
+            } catch (error) {
+                alert("Ungültige JSON-Datei.");
+                console.error(error);
+            }
+        };
+
+        reader.readAsText(file);
+    });
+}
