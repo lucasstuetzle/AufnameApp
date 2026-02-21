@@ -25,4 +25,14 @@
 <button onclick="window.location.href='../index.html'">Zurück</button>
 	
 </body>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+	const name = sessionStorage.getItem('editLocationName');
+	if (name) {
+		const el = document.getElementById('standortName');
+		if (el) el.value = name;
+		sessionStorage.removeItem('editLocationName');
+	}
+});
+</script>
 </html>
