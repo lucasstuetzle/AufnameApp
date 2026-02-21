@@ -85,6 +85,8 @@ document.getElementById('uploadJson').addEventListener('change', function(event)
       const locationValue = data.location ?? data.Location ?? data.name ?? null;
       if (locationValue) {
         sessionStorage.setItem('editLocationName', locationValue);
+        // also save the full JSON so other pages can access more fields if needed
+        try { sessionStorage.setItem('editLocationJson', JSON.stringify(data)); } catch (e) { /* ignore */ }
         window.location.href = 'Unterkategorien/Standort.html';
       } else {
         alert('Keine "location"-Eigenschaft in der JSON-Datei gefunden.');
