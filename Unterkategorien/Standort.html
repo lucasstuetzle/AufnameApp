@@ -1,28 +1,30 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="/AufnameApp/css/style.css"> <!-- Gleiche CSS Datei -->
-	<script src="/AufnameApp/js/fields.js"></script>
-	<script src="/AufnameApp/js/speicher.js"></script>
-	
-	<title>Grundriss</title>
-
-
+<meta charset="UTF-8">
+<title>Standort</title>
 </head>
 <body>
 
-    <label for="standortName">Standort Name:</label>
-    <input type="text" id="standortName" placeholder="Standort eingeben">
+<h1>Standort eintragen</h1>
 
-    <label for="standortAdresse">Adresse:</label>
-    <input type="text" id="standortAdresse" placeholder="Adresse eingeben">
+<!-- Formularfelder -->
+<form id="locationForm">
+  <label for="location">Standort-Name:</label>
+  <input type="text" id="location" name="location"><br><br>
 
-    <label for="standortBemerkung">Bemerkung:</label>
-    <input type="text" id="standortBemerkung" placeholder="Bemerkung hinzufügen">
+  <button type="button" id="newLocation">JSON speichern</button>
+</form>
 
-<button onclick="window.location.href='../index.html'">Zurück</button>
-	
+<hr>
+
+<!-- JSON hochladen -->
+<input type="file" id="jsonFileInput" accept=".json">
+<button type="button" id="loadJsonBtn">JSON laden</button>
+
+<!-- JS-Dateien einbinden -->
+<script src="js/fields.js"></script>
+<script src="js/createLocation.js"></script>
+
 </body>
 </html>
