@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
     // Prefer centralized `fields` from js/fields.js (window.fields). Fallback to local defaults.
-    const defaultFields = ["standortName", "standortAdresse", "standortBemerkung", "location", "supply", "capacity", "time", "energy", "author", "circuit"];
     const fields = (window && window.fields && Array.isArray(window.fields)) ? window.fields : defaultFields;
 
     // Remove duplicates while preserving order
