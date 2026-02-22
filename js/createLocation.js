@@ -1,13 +1,14 @@
 
 document.addEventListener("DOMContentLoaded", function () {
-    const newLocationButton = document.getElementById("newLocationButton");
+    // Suche den dedizierten Download-Button (beliebiges Element mit data-download="true")
+    const downloadButton = document.querySelector('[data-download="true"]');
 
-    if (!newLocationButton) {
-        console.error("Button 'newLocationButton' nicht gefunden.");
+    if (!downloadButton) {
+        console.error("Kein Download-Button mit data-download=\"true\" gefunden.");
         return;
     }
 
-    newLocationButton.addEventListener("click", function () {
+    downloadButton.addEventListener("click", function () {
         // Überprüfen, ob 'fields' definiert ist
         if (typeof fields === "undefined") {
             console.error("'fields' ist nicht definiert.");

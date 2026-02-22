@@ -28,9 +28,9 @@
 	</div>
 
 	<div style="margin-top:12px;">
-		<button onclick="window.location.href='Grundriss.html'">Grundriss</button>
-		<button onclick="window.location.href='Hausanschluss.html'">Hausanschluss</button>
-		<button onclick="window.location.href='Energieverteilung.html'">Energieverteilung</button>
+		<button id="btnGrundriss">Grundriss</button>
+		<button id="btnHausanschluss">Hausanschluss</button>
+		<button id="btnEnergieverteilung">Energieverteilung</button>
 	</div>
 
 <p>
@@ -83,4 +83,24 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 });
 </script>
+
+	// Navigation-Buttons: im Bearbeiten-Modus ist das Hochladen einer JSON-Datei erforderlich.
+	const requireJsonWhenEditing = function(targetUrl) {
+		if (mode === 'edit') {
+			const hasJson = !!sessionStorage.getItem('editLocationJson') || !!sessionStorage.getItem('editLocationName');
+			if (!hasJson) {
+				alert('Bitte zunächst die JSON-Datei hochladen, um im Bearbeitungsmodus fortzufahren.');
+				return false;
+			}
+		}
+		return true;
+	};
+
+	const btnGrundriss = document.getElementById('btnGrundriss');
+	const btnHausanschluss = document.getElementById('btnHausanschluss');
+	const btnEnergieverteilung = document.getElementById('btnEnergieverteilung');
+
+	if (btnGrundriss) btnGrundriss.addEventListener('click', function(){ if (requireJsonWhenEditing('Grundriss.html')) window.location.href = 'Grundriss.html'; });
+	if (btnHausanschluss) btnHausanschluss.addEventListener('click', function(){ if (requireJsonWhenEditing('Hausanschluss.html')) window.location.href = 'Hausanschluss.html'; });
+	if (btnEnergieverteilung) btnEnergieverteilung.addEventListener('click', function(){ if (requireJsonWhenEditing('Energieverteilung.html')) window.location.href = 'Energieverteilung.html'; });
 </html>
