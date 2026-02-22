@@ -7,7 +7,7 @@
 	<script src="/AufnameApp/js/fields.js"></script>
 	<script src="/AufnameApp/js/speicher.js"></script>
 	
-	<title>Grundriss</title>
+	<title>Standort</title>
 
 
 </head>
@@ -22,10 +22,7 @@
 	<label for="standortBemerkung">Bemerkung:</label>
 	<input type="text" id="standortBemerkung" placeholder="Bemerkung hinzufügen">
 
-	<div id="edit-upload" style="margin-top:10px; display:none;">
-		<label for="uploadJsonStandort">JSON-Datei hochladen (Bearbeiten):</label>
-		<input type="file" id="uploadJsonStandort" accept=".json">
-	</div>
+	<!-- Upload-Steuerelement wird auf der Übersichtsseite getriggert; entfernt -->
 
 	<div style="margin-top:12px;">
 		<button id="btnGrundriss">Grundriss</button>
@@ -42,11 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	const params = new URLSearchParams(window.location.search);
 	const mode = params.get('mode') || 'create';
 
-	// Wenn aus 'edit' aufgerufen, zeige Upload-Feld
-	if (mode === 'edit') {
-		const uploadDiv = document.getElementById('edit-upload');
-		if (uploadDiv) uploadDiv.style.display = 'block';
-	}
+	// Upload wird von der Übersichtsseite getriggert; im Edit-Modus werden sessionStorage-Werte geladen
 
 	// Falls schon ein Name in sessionStorage ist, anzeigen
 	const name = sessionStorage.getItem('editLocationName');
@@ -82,25 +75,3 @@ document.addEventListener('DOMContentLoaded', function() {
 		});
 	}
 });
-</script>
-
-	// Navigation-Buttons: im Bearbeiten-Modus ist das Hochladen einer JSON-Datei erforderlich.
-	const requireJsonWhenEditing = function(targetUrl) {
-		if (mode === 'edit') {
-			const hasJson = !!sessionStorage.getItem('editLocationJson') || !!sessionStorage.getItem('editLocationName');
-			if (!hasJson) {
-				alert('Bitte zunächst die JSON-Datei hochladen, um im Bearbeitungsmodus fortzufahren.');
-				return false;
-			}
-		}
-		return true;
-	};
-
-	const btnGrundriss = document.getElementById('btnGrundriss');
-	const btnHausanschluss = document.getElementById('btnHausanschluss');
-	const btnEnergieverteilung = document.getElementById('btnEnergieverteilung');
-
-	if (btnGrundriss) btnGrundriss.addEventListener('click', function(){ if (requireJsonWhenEditing('Grundriss.html')) window.location.href = 'Grundriss.html'; });
-	if (btnHausanschluss) btnHausanschluss.addEventListener('click', function(){ if (requireJsonWhenEditing('Hausanschluss.html')) window.location.href = 'Hausanschluss.html'; });
-	if (btnEnergieverteilung) btnEnergieverteilung.addEventListener('click', function(){ if (requireJsonWhenEditing('Energieverteilung.html')) window.location.href = 'Energieverteilung.html'; });
-</html>
