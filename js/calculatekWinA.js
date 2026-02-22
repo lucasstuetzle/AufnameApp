@@ -1,6 +1,6 @@
 // calculatekWinA.js
 // Converts between Anschlussleistung in kW and A using the project's formulas.
-(function () {
+document.addEventListener('DOMContentLoaded', function () {
     const kwInput = document.getElementById('Anschlussleistung kW');
     const aInput = document.getElementById('Anschlussleistung A');
     if (!kwInput || !aInput) return;
@@ -39,4 +39,4 @@
     } else if (aInput.value) {
         kwInput.value = aToKw(aInput.value);
     }
-})();
+});
