@@ -15,7 +15,7 @@
 	<!-- Schließlich createLocation.js einbinden -->
 	<script src="/AufnameApp/js/createLocation.js"></script>
 
-	<title>Übersicht</title>
+	<title>Standortauswahl</title>
 </head>
 	
 <body>
@@ -26,9 +26,12 @@
 
     <!-- Nur Auswahl: Neuer Standort oder Standort bearbeiten -->
     <button id="newLocationButton">Neuen Standort erstellen</button>
-    <button id="editLocationButton">Standort bearbeiten</button>
+    <button id="editLocationButton" onclick="document.getElementById('uploadJson').click()">✏️ Standort bearbeiten</button>
     <!-- Separater Download-Button für Speichern/Export (aktiviert durch createLocation.js) -->
     <button id="downloadLocationButton" data-download="true">Standort speichern (JSON herunterladen)</button>
+
+    <!-- Unsichtbarer File-Input für den JSON-Upload (wird vom Edit-Button ausgelöst) -->
+    <input type="file" id="uploadJson" accept=".json" style="display:none">
 
 	<button id="update-btn" style="position: fixed; bottom: 20px; right: 20px; padding: 10px; background-color: blue; color: white; border: none; border-radius: 5px; cursor: pointer;">
 	  Aktualisieren 🔄
@@ -71,9 +74,33 @@ if ('serviceWorker' in navigator) {
 document.getElementById('newLocationButton').addEventListener('click', function(){
   window.location.href = 'Unterkategorien/Standort.html?mode=create';
 });
-document.getElementById('editLocationButton').addEventListener('click', function(){
-  window.location.href = 'Unterkategorien/Standort.html?mode=edit';
-});
+
+// Upload-Handler für Bearbeiten: Datei einlesen, in sessionStorage ablegen und zur Seite navigieren
+const uploadJsonInput = document.getElementById('uploadJson');
+if (uploadJsonInput) {
+  uploadJsonInput.addEventListener('change', function(event){
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e){
+      try {
+        const data = JSON.parse(e.target.result);
+        const locationValue = data.location ?? data.Location ?? data.name ?? data.standortName ?? null;
+        if (locationValue) {
+          try { sessionStorage.setItem('editLocationJson', JSON.stringify(data)); } catch (err) { }
+          sessionStorage.setItem('editLocationName', locationValue);
+          // Navigiere in den Bearbeitungsmodus
+          window.location.href = 'Unterkategorien/Standort.html?mode=edit';
+        } else {
+          alert('Keine "location"-Eigenschaft in der JSON-Datei gefunden.');
+        }
+      } catch (err) {
+        alert('Fehler beim Einlesen der JSON-Datei: ' + err.message);
+      }
+    };
+    reader.readAsText(file);
+  });
+}
 </script>
 
 </body>
