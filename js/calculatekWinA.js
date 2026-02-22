@@ -28,19 +28,26 @@ document.addEventListener('DOMContentLoaded', function () {
         return String(Math.round(kw));
     }
 
-    kwInput.addEventListener('input', function () {
-        if (programmatic) { programmatic = false; return; }
-        const a = kwToA(kwInput.value);
-        programmatic = true;
-        aInput.value = a;
-    });
+    // When the user edits one field, clear the other and compute the new value.
+    function handleKwInput() {
+        // remove listener from A to avoid reacting while we update
+        aInput.removeEventListener('input', handleAInput);
+        // compute and set A (clear first visually)
+        aInput.value = '';
+        aInput.value = kwToA(kwInput.value);
+        // reattach listener
+        aInput.addEventListener('input', handleAInput);
+    }
 
-    aInput.addEventListener('input', function () {
-        if (programmatic) { programmatic = false; return; }
-        const kw = aToKw(aInput.value);
-        programmatic = true;
-        kwInput.value = kw;
-    });
+    function handleAInput() {
+        kwInput.removeEventListener('input', handleKwInput);
+        kwInput.value = '';
+        kwInput.value = aToKw(aInput.value);
+        kwInput.addEventListener('input', handleKwInput);
+    }
+
+    kwInput.addEventListener('input', handleKwInput);
+    aInput.addEventListener('input', handleAInput);
 
     // initialize values on load if one is present
     if (kwInput.value) {
