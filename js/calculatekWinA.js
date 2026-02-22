@@ -7,16 +7,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let programmatic = false;
 
-    function kwToA(kw) {
-        const v = parseFloat(kw);
-        if (isNaN(v)) return '';
-        return (v / 690 * 1000).toFixed(2);
+    function parseNumber(x) {
+        if (x === null || x === undefined) return NaN;
+        return parseFloat(String(x).trim().replace(',', '.'));
     }
 
-    function aToKw(a) {
-        const v = parseFloat(a);
+    // kW -> A : A = kW * 1000 / 690
+    function kwToA(kw) {
+        const v = parseNumber(kw);
         if (isNaN(v)) return '';
-        return (v * 690 / 1000).toFixed(3);
+        const a = v * 1000 / 690;
+        return String(Math.round(a));
+    }
+
+    // A -> kW : kW = A * 690 / 1000
+    function aToKw(a) {
+        const v = parseNumber(a);
+        if (isNaN(v)) return '';
+        const kw = v * 690 / 1000;
+        return String(Math.round(kw));
     }
 
     kwInput.addEventListener('input', function () {
