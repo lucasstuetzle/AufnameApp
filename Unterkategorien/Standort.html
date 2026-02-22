@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	if (storedJson) {
 		try {
 			const data = JSON.parse(storedJson);
-			const locationValue = data.location ?? data.Location ?? data.name ?? null;
+			const locationValue = data.standortName ?? data.standortname ?? data.location ?? data.Location ?? data.name ?? null;
 			if (locationValue) {
 				const el = document.getElementById('standortName');
 				if (el) el.value = locationValue;
@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			reader.onload = function(e){
 				try {
 					const data = JSON.parse(e.target.result);
-					const locationValue = data.location ?? data.Location ?? data.name ?? null;
+					const locationValue = data.standortName ?? data.standortname ?? data.location ?? data.Location ?? data.name ?? null;
 					if (locationValue) {
 						sessionStorage.setItem('editLocationName', locationValue);
 						try { sessionStorage.setItem('editLocationJson', JSON.stringify(data)); } catch (err) { }

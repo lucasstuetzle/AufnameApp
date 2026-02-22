@@ -26,7 +26,7 @@
 
     <!-- Nur Auswahl: Neuer Standort oder Standort bearbeiten -->
     <button id="newLocationButton">Neuen Standort erstellen</button>
-    <button id="editLocationButton" onclick="document.getElementById('uploadJson').click()">✏️ Standort bearbeiten</button>
+    <button id="editLocationButton" onclick="document.getElementById('uploadJson').click()">Standort bearbeiten</button>
     <!-- Separater Download-Button für Speichern/Export (aktiviert durch createLocation.js) -->
     <button id="downloadLocationButton" data-download="true">Standort speichern (JSON herunterladen)</button>
 
@@ -85,14 +85,40 @@ if (uploadJsonInput) {
     reader.onload = function(e){
       try {
         const data = JSON.parse(e.target.result);
-        const locationValue = data.location ?? data.Location ?? data.name ?? data.standortName ?? null;
-        if (locationValue) {
-          try { sessionStorage.setItem('editLocationJson', JSON.stringify(data)); } catch (err) { }
-          sessionStorage.setItem('editLocationName', locationValue);
-          // Navigiere in den Bearbeitungsmodus
+        try { sessionStorage.setItem('editLocationJson', JSON.stringify(data)); } catch (err) { }
+
+        // Wenn 'fields' definiert ist (wird in js/fields.js geladen), alle bekannten Felder übernehmen
+        if (typeof fields !== 'undefined' && Array.isArray(fields)) {
+          fields.forEach(field => {
+            let value = null;
+            if (data[field] !== undefined && data[field] !== null) value = data[field];
+            // Zusätzliche Synonyme für Adresse/Bemerkung prüfen
+            if (!value) {
+              if (field === 'standortAdresse') value = data.address ?? data.adresse ?? data.Address ?? null;
+              if (field === 'standortBemerkung') value = data.remark ?? data.bemerkung ?? data.note ?? null;
+            }
+            // Fallback: lowercase key
+            if (!value && typeof field === 'string') {
+              const low = field.charAt(0).toLowerCase() + field.slice(1);
+              if (data[low] !== undefined) value = data[low];
+            }
+            if (value !== null && value !== undefined) {
+              try { sessionStorage.setItem(field, value.toString()); } catch (err) { }
+            }
+          });
+        } else {
+          // Fallback: zumindest die üblichen Namen übernehmen
+          if (data.standortName) try { sessionStorage.setItem('standortName', data.standortName); } catch (err) {}
+          if (data.location) try { sessionStorage.setItem('location', data.location); } catch (err) {}
+        }
+
+        // Bestimme einen Anzeige-/Dateinamen: priorisiere standortName, dann location/name/Location
+        const nameCandidate = sessionStorage.getItem('standortName') || sessionStorage.getItem('location') || data.name || data.Location || data.standortName || null;
+        if (nameCandidate) {
+          try { sessionStorage.setItem('editLocationName', nameCandidate); } catch (err) { }
           window.location.href = 'Unterkategorien/Standort.html?mode=edit';
         } else {
-          alert('Keine "location"-Eigenschaft in der JSON-Datei gefunden.');
+          alert('Keine gültige Namens-Eigenschaft (z.B. standortName oder location) in der JSON-Datei gefunden.');
         }
       } catch (err) {
         alert('Fehler beim Einlesen der JSON-Datei: ' + err.message);
