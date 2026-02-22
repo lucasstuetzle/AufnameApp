@@ -22,12 +22,14 @@
 	<label for="standortBemerkung">Bemerkung:</label>
 	<input type="text" id="standortBemerkung" placeholder="Bemerkung hinzufügen">
 
+    <!-- Hidden upload input: Übersicht/andere Seiten können diese auslösen -->
+    <input type="file" id="uploadJsonStandort" accept="application/json" style="display:none">
 	<!-- Upload-Steuerelement wird auf der Übersichtsseite getriggert; entfernt -->
 
 	<div style="margin-top:12px;">
-		<button id="btnGrundriss">Grundriss</button>
-		<button id="btnHausanschluss">Hausanschluss</button>
-		<button id="btnEnergieverteilung">Energieverteilung</button>
+		<button onclick="window.location.href='Grundriss.html'">Grundriss</button>
+		<button onclick="window.location.href='Hausanschluss.html'">Hausanschluss</button>
+		<button onclick="window.location.href='Energieverteilung.html'">Energieverteilung</button>
 	</div>
 
 <p>
@@ -48,6 +50,31 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (el) el.value = name;
 	}
 
+	// Falls bereits eine ganze JSON im sessionStorage liegt, parsen und Felder befüllen
+	const storedJson = sessionStorage.getItem('editLocationJson');
+	if (storedJson) {
+		try {
+			const data = JSON.parse(storedJson);
+			const locationValue = data.location ?? data.Location ?? data.name ?? null;
+			if (locationValue) {
+				const el = document.getElementById('standortName');
+				if (el) el.value = locationValue;
+			}
+			const adresseValue = data.address ?? data.adresse ?? data.Address ?? null;
+			if (adresseValue) {
+				const a = document.getElementById('standortAdresse');
+				if (a) a.value = adresseValue;
+			}
+			const bemerkungValue = data.remark ?? data.bemerkung ?? data.note ?? null;
+			if (bemerkungValue) {
+				const b = document.getElementById('standortBemerkung');
+				if (b) b.value = bemerkungValue;
+			}
+		} catch (e) {
+			// ignore parse errors
+		}
+	}
+
 	// JSON-Upload im Bearbeiten-Modus verarbeiten
 	const uploadInput = document.getElementById('uploadJsonStandort');
 	if (uploadInput) {
@@ -64,6 +91,17 @@ document.addEventListener('DOMContentLoaded', function() {
 						try { sessionStorage.setItem('editLocationJson', JSON.stringify(data)); } catch (err) { }
 						const el = document.getElementById('standortName');
 						if (el) el.value = locationValue;
+						// optionally fill other common fields if present in JSON
+						const adresseValue = data.address ?? data.adresse ?? data.Address ?? null;
+						if (adresseValue) {
+							const a = document.getElementById('standortAdresse');
+							if (a) a.value = adresseValue;
+						}
+						const bemerkungValue = data.remark ?? data.bemerkung ?? data.note ?? null;
+						if (bemerkungValue) {
+							const b = document.getElementById('standortBemerkung');
+							if (b) b.value = bemerkungValue;
+						}
 					} else {
 						alert('Keine "location"-Eigenschaft in der JSON-Datei gefunden.');
 					}
@@ -74,4 +112,5 @@ document.addEventListener('DOMContentLoaded', function() {
 			reader.readAsText(file);
 		});
 	}
-});
+}
+);
