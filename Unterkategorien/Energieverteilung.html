@@ -12,11 +12,10 @@
 	<script src="/AufnameApp/js/Berechnung-kWh.js"></script> <!-- Zugriff auf Funktion Energieberechnung  -->
 </head>
 <body>
+    <h1>Energieverteilung</h1>
+    <p>Hier kannst du weitere Informationen über die Energieverteilung hinzufügen.</p>
 
 <form id="energyForm">
-	<!-- Eingabefeld für den Standort -->
-        <label for="location">Standort:</label>
-        <input type="text" id="location" required>
 
         <!-- Auswahlfeld für die Energiequelle -->
         <label for="supply">Energiequelle:</label>
@@ -46,7 +45,8 @@
     </form>
 
 <button onclick="window.location.href='Standort.html'">Zurück zu Standort</button>
-	
+<button id="downloadLocationButton" data-download="true">Standort speichern</button>
+
 </body>
 </html>
 
