@@ -13,7 +13,8 @@
 	
 	<title>Energieverteilung</title>
 
-	<script src="/AufnameApp/js/Berechnung-kWh.js"></script> <!-- Zugriff auf Funktion Energieberechnung  -->
+    <script src="/AufnameApp/js/Berechnung-kWh.js"></script> <!-- Zugriff auf Funktion Energieberechnung  -->
+    <script src="/AufnameApp/js/Berechnung-Ladepunkte.js"></script>
 </head>
 <body>
     <h1>Energieverteilung</h1>
@@ -43,9 +44,31 @@
         <label for="energy">Energiemenge (kWh):</label>
         <input type="text" id="energy" readonly>
 
-        <!-- Eingabefeld für den Autor -->
-        <label for="author">Autor</label>
-        <input type="text" id="author" required>
+        <label for="Anzahl Ladepunkte">Anzahl Ladepunkte:</label>
+        <input type="number" id="Anzahl Ladepunkte">
+
+        <!-- Auswahl für Berechnungsmodus -->
+        <label for="lpMode">Modus:</label>
+        <select id="lpMode">
+            <option value="GLF">GLF</option>
+            <option value="kW">kW/SP</option>
+        </select>
+
+        <!-- Schieberegler: Werte und Bereich werden per JS gesetzt -->
+        <label for="lpSlider">Wert:</label>
+        <input type="range" id="lpSlider" min="0.1" max="1" step="0.1" value="1">
+        <span id="lpSliderValue">1</span>
+
+        <!-- Ausgabe: Notwendige Energie -->
+        <label for="requiredEnergy">Notwendige Energie (kW):</label>
+        <input type="text" id="requiredEnergy" readonly>
+
+        
+
+
+
+
+
     </form>
 
 <button onclick="window.location.href='Standort.html'">Zurück zu Standort</button>
