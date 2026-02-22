@@ -11,10 +11,11 @@ const fieldGroups = {
 		"supply",
 		"capacity",
 		"time",
-		"energy"
+		"energy",
+        "LadepunkteAnzahl ",
 	],
 	Energieversorgung: [
-		"circuit",
+		"BezeichnungEnergieversorgung",
 		"Anschlussleistung kW",
 		"Anschlussleistung A"
 	]
