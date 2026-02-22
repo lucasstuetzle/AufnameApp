@@ -12,7 +12,8 @@ const fieldGroups = {
 		"capacity",
 		"time",
 		"energy",
-        "LadepunkteAnzahl ",
+        "Anzahl Ladepunkte",
+    
 	],
 	Energieversorgung: [
 		"BezeichnungEnergieversorgung",
