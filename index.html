@@ -87,33 +87,20 @@ if (uploadJsonInput) {
         const data = JSON.parse(e.target.result);
         try { sessionStorage.setItem('editLocationJson', JSON.stringify(data)); } catch (err) { }
 
-        // Wenn 'fields' definiert ist (wird in js/fields.js geladen), alle bekannten Felder übernehmen
-        if (typeof fields !== 'undefined' && Array.isArray(fields)) {
-          fields.forEach(field => {
-            let value = null;
-            if (data[field] !== undefined && data[field] !== null) value = data[field];
-            // Zusätzliche Synonyme für Adresse/Bemerkung prüfen
-            if (!value) {
-              if (field === 'standortAdresse') value = data.address ?? data.adresse ?? data.Address ?? null;
-              if (field === 'standortBemerkung') value = data.remark ?? data.bemerkung ?? data.note ?? null;
-            }
-            // Fallback: lowercase key
-            if (!value && typeof field === 'string') {
-              const low = field.charAt(0).toLowerCase() + field.slice(1);
-              if (data[low] !== undefined) value = data[low];
-            }
+        // Store ALL keys from JSON into sessionStorage (including EV_*, standortName, etc)
+        for (const key in data) {
+          try {
+            const value = data[key];
             if (value !== null && value !== undefined) {
-              try { sessionStorage.setItem(field, value.toString()); } catch (err) { }
+              sessionStorage.setItem(key, String(value));
             }
-          });
-        } else {
-          // Fallback: zumindest die üblichen Namen übernehmen
-          if (data.standortName) try { sessionStorage.setItem('standortName', data.standortName); } catch (err) {}
-          if (data.location) try { sessionStorage.setItem('location', data.location); } catch (err) {}
+          } catch (err) {
+            console.warn('Could not set sessionStorage for', key, err);
+          }
         }
 
-        // Bestimme einen Anzeige-/Dateinamen: priorisiere standortName, dann location/name/Location
-        const nameCandidate = sessionStorage.getItem('standortName') || sessionStorage.getItem('location') || data.name || data.Location || data.standortName || null;
+        // Determine display name for editLocationName
+        const nameCandidate = data.standortName || data.location || data.name || data.Location || null;
         if (nameCandidate) {
           try { sessionStorage.setItem('editLocationName', nameCandidate); } catch (err) { }
           window.location.href = 'Unterkategorien/Standort.html?mode=edit';
@@ -127,10 +114,8 @@ if (uploadJsonInput) {
     reader.readAsText(file);
   });
 }
-</script>
 
-</body>
-</html>
+
 
 
 
