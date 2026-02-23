@@ -42,10 +42,8 @@
 			names.forEach(name => {
 				const li = document.createElement('li');
 				const data = window.subpageStorage.getSubpage(group, name, fields);
-				const summary = `${name} — Ladepunkte: ${data['Anzahl Ladepunkte'] || '-'}`;
-				li.textContent = summary;
-
-				const editLink = document.createElement('a');
+			const lp = data['Anzahl Ladepunkte'] || '-';
+			const summary = `${name} — ${lp} Punkte`;
 				editLink.textContent = 'Bearbeiten';
 				editLink.href = `Energieverteilung_edit.html?name=${encodeURIComponent(name)}`;
 				editLink.style.marginLeft = '8px';
