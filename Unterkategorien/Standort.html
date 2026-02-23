@@ -97,25 +97,55 @@ document.addEventListener('DOMContentLoaded', function() {
 			reader.onload = function(e){
 				try {
 					const data = JSON.parse(e.target.result);
+					// Put all keys from JSON into sessionStorage (strings)
+					for (const k in data) {
+						try {
+							const v = data[k];
+							if (v === null || v === undefined) continue;
+							sessionStorage.setItem(k, String(v));
+						} catch (err) {
+							console.warn('Could not set sessionStorage for', k, err);
+						}
+					}
+
+					// Reconstruct subpages lists per known groups by scanning numbered keys
+					if (window.fieldGroups) {
+						for (const group in window.fieldGroups) {
+							const groupFields = window.fieldGroups[group];
+							const idxSet = new Set();
+							for (const jsonKey in data) {
+								for (const base of groupFields) {
+									if (jsonKey.startsWith(base)) {
+										const suffix = jsonKey.slice(base.length);
+										if (/^\d+$/.test(suffix)) idxSet.add(Number(suffix));
+									}
+								}
+							}
+							if (idxSet.size > 0) {
+								const arr = Array.from(idxSet).sort((a,b)=>a-b);
+								sessionStorage.setItem(`subpages_${group}`, JSON.stringify(arr));
+							}
+						}
+					}
+
+					// Populate some visible common fields for immediate feedback
 					const locationValue = data.standortName ?? data.standortname ?? data.location ?? data.Location ?? data.name ?? null;
 					if (locationValue) {
 						sessionStorage.setItem('editLocationName', locationValue);
 						try { sessionStorage.setItem('editLocationJson', JSON.stringify(data)); } catch (err) { }
 						const el = document.getElementById('standortName');
 						if (el) el.value = locationValue;
-						// optionally fill other common fields if present in JSON
-						const adresseValue = data.address ?? data.adresse ?? data.Address ?? null;
-						if (adresseValue) {
-							const a = document.getElementById('standortAdresse');
-							if (a) a.value = adresseValue;
-						}
-						const bemerkungValue = data.remark ?? data.bemerkung ?? data.note ?? null;
-						if (bemerkungValue) {
-							const b = document.getElementById('standortBemerkung');
-							if (b) b.value = bemerkungValue;
-						}
-					} else {
-						alert('Keine "location"-Eigenschaft in der JSON-Datei gefunden.');
+					}
+
+					const adresseValue = data.address ?? data.adresse ?? data.Address ?? null;
+					if (adresseValue) {
+						const a = document.getElementById('standortAdresse');
+						if (a) a.value = adresseValue;
+					}
+					const bemerkungValue = data.remark ?? data.bemerkung ?? data.note ?? null;
+					if (bemerkungValue) {
+						const b = document.getElementById('standortBemerkung');
+						if (b) b.value = bemerkungValue;
 					}
 				} catch (err) {
 					alert('Fehler beim Einlesen der JSON-Datei: ' + err.message);
