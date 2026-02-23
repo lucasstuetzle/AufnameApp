@@ -1,6 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Prefer centralized `fields` from js/fields.js (window.fields). Fallback to local defaults.
-    const fields = (window && window.fields && Array.isArray(window.fields)) ? window.fields : defaultFields;
+    // Use `fieldGroups.common` by default to avoid persisting subpage-specific fields
+    // Fallback to `window.fields` or an empty array.
+    const fields = (window && window.fieldGroups && Array.isArray(window.fieldGroups.common))
+        ? window.fieldGroups.common
+        : ((window && window.fields && Array.isArray(window.fields)) ? window.fields : []);
 
     // Remove duplicates while preserving order
     const seen = new Set();
