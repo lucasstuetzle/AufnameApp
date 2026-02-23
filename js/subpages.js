@@ -10,9 +10,14 @@
         const createBtn = document.getElementById('createSubpageBtn');
         const listContainer = document.getElementById('subpagesOverview');
 
+
         if (!createBtn || !listContainer) return;
 
-        createBtn.addEventListener('click', () => openEditor());
+        // Open dedicated edit page for full-page layout (instead of modal)
+        createBtn.addEventListener('click', () => {
+            // new page without id -> create
+            window.location.href = `${group}_edit.html`;
+        });
 
         renderList();
 
@@ -129,12 +134,14 @@
                 const title = sessionStorage.getItem(`subpageTitle_${group}_${id}`) || `${group} ${id}`;
                 const summary = summaryFields.map(f => `${f}${id}: ${sessionStorage.getItem(f + id) || '-'} `).join(', ');
                 li.textContent = `${title} — ${summary}`;
-                const edit = document.createElement('button'); edit.textContent = 'Bearbeiten';
-                edit.addEventListener('click', () => openEditor(id));
+                const editLink = document.createElement('a');
+                editLink.textContent = 'Bearbeiten';
+                editLink.href = `${group}_edit.html?id=${id}`;
+                editLink.style.marginLeft = '8px';
                 const del = document.createElement('button'); del.textContent = 'Löschen';
                 del.addEventListener('click', () => { deleteEntry(id); renderList(); });
                 li.appendChild(document.createTextNode(' '));
-                li.appendChild(edit);
+                li.appendChild(editLink);
                 li.appendChild(document.createTextNode(' '));
                 li.appendChild(del);
                 ul.appendChild(li);
