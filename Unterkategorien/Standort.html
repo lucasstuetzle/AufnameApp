@@ -108,23 +108,31 @@ document.addEventListener('DOMContentLoaded', function() {
 						}
 					}
 
-					// Reconstruct subpages lists per known groups by scanning numbered keys
-					if (window.fieldGroups) {
-						for (const group in window.fieldGroups) {
-							const groupFields = window.fieldGroups[group];
-							const idxSet = new Set();
-							for (const jsonKey in data) {
-								for (const base of groupFields) {
-									if (jsonKey.startsWith(base)) {
-										const suffix = jsonKey.slice(base.length);
-										if (/^\d+$/.test(suffix)) idxSet.add(Number(suffix));
-									}
-								}
+					// Reconstruct subpages from new format (EV_Name_Field, EV_dist_Name_Field)
+					// Scan JSON for EV_* and EV_dist_* keys and group by name
+					const subpagesByGroup = {};
+					for (const jsonKey in data) {
+						if (jsonKey.startsWith('EV_')) {
+							let group = 'Energieversorgung';
+							let rest = jsonKey.slice(3); // remove 'EV_'
+							if (jsonKey.startsWith('EV_dist_')) {
+								group = 'Energieverteilung';
+								rest = jsonKey.slice(8); // remove 'EV_dist_'
 							}
-							if (idxSet.size > 0) {
-								const arr = Array.from(idxSet).sort((a,b)=>a-b);
-								sessionStorage.setItem(`subpages_${group}`, JSON.stringify(arr));
+							if (!subpagesByGroup[group]) subpagesByGroup[group] = new Set();
+							// rest = "Name_Field..." → extract name
+							const lastUnder = rest.lastIndexOf('_');
+							if (lastUnder > 0) {
+								const name = rest.slice(0, lastUnder).replace(/_/g, ' ');
+								subpagesByGroup[group].add(name);
 							}
+						}
+					}
+					// Store subpage metadata (names per group)
+					for (const group in subpagesByGroup) {
+						const names = Array.from(subpagesByGroup[group]);
+						if (names.length > 0) {
+							sessionStorage.setItem(`subpages_${group}_names`, JSON.stringify(names));
 						}
 					}
 
