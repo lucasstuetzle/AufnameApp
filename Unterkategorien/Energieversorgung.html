@@ -19,27 +19,24 @@
 	
 <body>
     <h1>Energieversorgung</h1>
-    <p>Hier kannst du Informationen über die Energieversorgung hinzufügen.</p>
+	<p>Übersicht der Energieversorgungen (Unterseiten)</p>
 
-	<form id="BezeichnungEnergieversorgung">
-		<!-- Eingabefeld für den Hausanschluss -->
-		<label for="BezeichnungEnergieversorgung">Name:</label>
-		<input type="text" id="BezeichnungEnergieversorgung" required>
+	<button id="createSubpageBtn">Energieversorgung anlegen</button>
+	<div id="subpagesOverview" class="subpages-overview"></div>
 
-		<label for="Anschlussleistung kW">Anschlussleistung (kW):</label>
-		<input type="number" id="Anschlussleistung kW">
-
-		<label for="Anschlussleistung A">Anschlussleistung (A):</label>
-		<input type="number" id="Anschlussleistung A">
-		
-	</form>
-	
-	<div class="subpage-controls">
-	    <input type="text" id="subpageTitle" placeholder="Unterseitentitel (optional)">
-	    <button id="addSubpageBtn">Neue Unterseite anlegen</button>
-	</div>
-
-	<div id="subpagesList" class="subpages-list"></div>
+	<script src="/AufnameApp/js/subpages.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			// init generic manager for Energieversorgung
+			if (window.fieldGroups && window.fieldGroups.Energieversorgung) {
+				window.initSubpageManager({
+					group: 'Energieversorgung',
+					fields: window.fieldGroups.Energieversorgung,
+					summaryFields: ['Anschlussleistung kW']
+				});
+			}
+		});
+	</script>
 
 	<!-- Button zurück zur Hauptseite -->
 	
