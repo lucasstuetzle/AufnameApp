@@ -32,13 +32,6 @@
 	<label for="author">Autor</label>
 	<input type="text" id="author" required>
 
-    <!-- Upload JSON input -->
-    <div style="margin-top: 12px; margin-bottom: 12px;">
-        <label for="uploadJsonStandort">Bestehende Datei importieren:</label>
-        <input type="file" id="uploadJsonStandort" accept="application/json">
-    </div>
-	<!-- Upload-Steuerelement wird auf der Übersichtsseite getriggert; entfernt -->
-
 	<div style="margin-top:12px;">
 		<button onclick="window.location.href='Grundriss.html'">Grundriss</button>
 		<button onclick="window.location.href='Energieversorgung.html'">Energieversorgung</button>
@@ -53,130 +46,60 @@
 </body>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-	const params = new URLSearchParams(window.location.search);
-	const mode = params.get('mode') || 'create';
-
-	// Upload wird von der Übersichtsseite getriggert; im Edit-Modus werden sessionStorage-Werte geladen
-
-	// Falls schon ein Name in sessionStorage ist, anzeigen
-	const name = sessionStorage.getItem('editLocationName');
-	if (name) {
-		const el = document.getElementById('standortName');
-		if (el) el.value = name;
-	}
-
-	// Falls bereits eine ganze JSON im sessionStorage liegt, parsen und Felder befüllen
-	const storedJson = sessionStorage.getItem('editLocationJson');
-	if (storedJson) {
-		try {
-			const data = JSON.parse(storedJson);
-			const locationValue = data.standortName ?? data.standortname ?? data.location ?? data.Location ?? data.name ?? null;
-			if (locationValue) {
-				const el = document.getElementById('standortName');
-				if (el) el.value = locationValue;
+	// Auto-detect EV_ keys in sessionStorage and reconstruct subpage metadata
+	function detectAndCreateSubpages() {
+		const subpagesByGroup = {};
+		
+		for (let i = 0; i < sessionStorage.length; i++) {
+			const key = sessionStorage.key(i);
+			if (!key) continue;
+			
+			let group = null;
+			let rest = null;
+			
+			if (key.startsWith('EV_dist_')) {
+				group = 'Energieverteilung';
+				rest = key.slice(8);
+			} else if (key.startsWith('EV_')) {
+				group = 'Energieversorgung';
+				rest = key.slice(3);
 			}
-			const adresseValue = data.address ?? data.adresse ?? data.Address ?? null;
-			if (adresseValue) {
-				const a = document.getElementById('standortAdresse');
-				if (a) a.value = adresseValue;
+			
+			if (group && rest && window.fieldGroups && window.fieldGroups[group]) {
+				const knownFields = window.fieldGroups[group];
+				for (const field of knownFields) {
+					const safField = field.replace(/\s+/g, '_');
+					if (rest.endsWith(safField)) {
+						const nameEnd = rest.length - safField.length - 1;
+						if (nameEnd > 0) {
+							const name = rest.slice(0, nameEnd).replace(/_/g, ' ');
+							if (!subpagesByGroup[group]) subpagesByGroup[group] = new Set();
+							subpagesByGroup[group].add(name);
+							break;
+						}
+					}
+				}
 			}
-			const bemerkungValue = data.remark ?? data.bemerkung ?? data.note ?? null;
-			if (bemerkungValue) {
-				const b = document.getElementById('standortBemerkung');
-				if (b) b.value = bemerkungValue;
+		}
+		
+		// Store subpage metadata
+		for (const group in subpagesByGroup) {
+			const names = Array.from(subpagesByGroup[group]);
+			if (names.length > 0) {
+				sessionStorage.setItem(`subpages_${group}_names`, JSON.stringify(names));
 			}
-		} catch (e) {
-			// ignore parse errors
 		}
 	}
 
-	// JSON-Upload im Bearbeiten-Modus verarbeiten
-	const uploadInput = document.getElementById('uploadJsonStandort');
-	if (uploadInput) {
-		uploadInput.addEventListener('change', function(event){
-			const file = event.target.files[0];
-			if (!file) return;
-			const reader = new FileReader();
-			reader.onload = function(e){
-				try {
-					const data = JSON.parse(e.target.result);
-					// Put all keys from JSON into sessionStorage (strings)
-					for (const k in data) {
-						try {
-							const v = data[k];
-							if (v === null || v === undefined) continue;
-							sessionStorage.setItem(k, String(v));
-						} catch (err) {
-							console.warn('Could not set sessionStorage for', k, err);
-						}
-					}
+	// Auto-detect subpages on load
+	detectAndCreateSubpages();
 
-					// Reconstruct subpages from new format (EV_Name_Field, EV_dist_Name_Field)
-					// Scan JSON for EV_* and EV_dist_* keys and extract unique names per group
-					const subpagesByGroup = {};
-					for (const jsonKey in data) {
-						let group = null;
-						let rest = null;
-						
-						if (jsonKey.startsWith('EV_dist_')) {
-							group = 'Energieverteilung';
-							rest = jsonKey.slice(8); // remove 'EV_dist_'
-						} else if (jsonKey.startsWith('EV_')) {
-							group = 'Energieversorgung';
-							rest = jsonKey.slice(3); // remove 'EV_'
-						}
-						
-						if (group && rest && window.fieldGroups && window.fieldGroups[group]) {
-							// Try to match field names to find name/field boundary
-							const knownFields = window.fieldGroups[group];
-							for (const field of knownFields) {
-								const safField = field.replace(/\s+/g, '_');
-								if (rest.endsWith(safField)) {
-									const nameEnd = rest.length - safField.length - 1; // -1 for separator _
-									if (nameEnd > 0) {
-										const name = rest.slice(0, nameEnd).replace(/_/g, ' ');
-										if (!subpagesByGroup[group]) subpagesByGroup[group] = new Set();
-										subpagesByGroup[group].add(name);
-										break;
-									}
-								}
-							}
-						}
-					}
-					
-					// Store subpage metadata (names per group)
-					for (const group in subpagesByGroup) {
-						const names = Array.from(subpagesByGroup[group]);
-						if (names.length > 0) {
-							sessionStorage.setItem(`subpages_${group}_names`, JSON.stringify(names));
-						}
-					}
-
-					// Populate some visible common fields for immediate feedback
-					const locationValue = data.standortName ?? data.standortname ?? data.location ?? data.Location ?? data.name ?? null;
-					if (locationValue) {
-						sessionStorage.setItem('editLocationName', locationValue);
-						try { sessionStorage.setItem('editLocationJson', JSON.stringify(data)); } catch (err) { }
-						const el = document.getElementById('standortName');
-						if (el) el.value = locationValue;
-					}
-
-					const adresseValue = data.address ?? data.adresse ?? data.Address ?? null;
-					if (adresseValue) {
-						const a = document.getElementById('standortAdresse');
-						if (a) a.value = adresseValue;
-					}
-					const bemerkungValue = data.remark ?? data.bemerkung ?? data.note ?? null;
-					if (bemerkungValue) {
-						const b = document.getElementById('standortBemerkung');
-						if (b) b.value = bemerkungValue;
-					}
-				} catch (err) {
-					alert('Fehler beim Einlesen der JSON-Datei: ' + err.message);
-				}
-			};
-			reader.readAsText(file);
-		});
-	}
-}
-);
+	// Populate form fields from sessionStorage if they exist
+	const fields = ['standortName', 'standortAdresse', 'standortBemerkung', 'author'];
+	fields.forEach(field => {
+		const el = document.getElementById(field);
+		const value = sessionStorage.getItem(field);
+		if (el && value) el.value = value;
+	});
+});
+</script>
