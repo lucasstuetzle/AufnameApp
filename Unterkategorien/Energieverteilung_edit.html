@@ -5,15 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/AufnameApp/css/style.css">
     <script src="/AufnameApp/js/fields.js"></script>
-    <script src="/AufnameApp/js/calculatekWinA.js"></script>
+    <script src="/AufnameApp/js/subpageStorage.js"></script>
+    <script src="/AufnameApp/js/Berechnung-kWh.js"></script>
+    <script src="/AufnameApp/js/Berechnung-Ladepunkte.js"></script>
     <title>Energieverteilung — Editor</title>
 </head>
 <body>
     <h1>Energieverteilung (Unterseite)</h1>
     <form id="subpageForm">
-        <label for="subpageTitle">Titel (optional)</label>
-        <input type="text" id="subpageTitle">
-
         <label for="supply">Energiequelle:</label>
         <select id="supply">
             <option>Netzstrom</option>
@@ -55,45 +54,35 @@
     <script>
         (function(){
             const params = new URLSearchParams(window.location.search);
-            const id = params.get('id');
+            const editName = params.get('name'); // for editing
             const group = 'Energieverteilung';
             const fields = window.fieldGroups && window.fieldGroups[group] ? window.fieldGroups[group] : ['supply','capacity','time','energy','Anzahl Ladepunkte','lpMode','lpSlider','requiredEnergy'];
 
             function populate() {
-                if (!id) return;
-                fields.forEach(f => {
-                    const el = document.getElementById(f);
-                    if (!el) return;
-                    const v = sessionStorage.getItem(f + id);
-                    if (v !== null) el.value = v;
-                });
-                const t = sessionStorage.getItem(`subpageTitle_${group}_${id}`);
-                if (t) document.getElementById('subpageTitle').value = t;
-            }
-
-            function ensureListContains(i) {
-                const key = `subpages_${group}`;
-                const raw = sessionStorage.getItem(key);
-                const list = raw ? JSON.parse(raw) : [];
-                if (!list.includes(i)) { list.push(Number(i)); sessionStorage.setItem(key, JSON.stringify(list)); }
+                if (!editName) return;
+                const data = window.subpageStorage.getSubpage(group, editName, fields);
+                for (const field in data) {
+                    const el = document.getElementById(field);
+                    if (el) el.value = data[field];
+                }
             }
 
             document.getElementById('saveSubpageBtn').addEventListener('click', function(){
-                let idx = id ? Number(id) : null;
-                const key = `subpages_${group}`;
-                const raw = sessionStorage.getItem(key);
-                const list = raw ? JSON.parse(raw) : [];
-                if (!idx) {
-                    idx = list.length === 0 ? 1 : (Math.max(...list.map(i=>Number(i))) + 1);
-                }
+                // For Energieverteilung, use supply as name/identifier
+                const supplyVal = document.getElementById('supply').value.trim();
+                const capacityVal = document.getElementById('capacity').value.trim();
+                const name = supplyVal && capacityVal ? `${supplyVal} ${capacityVal}` : (supplyVal || 'Energieverteilung');
+
+                const data = {};
                 fields.forEach(f => {
                     const el = document.getElementById(f);
-                    const v = el ? el.value : '';
-                    sessionStorage.setItem(f + idx, v);
+                    if (el) data[f] = el.value || '';
                 });
-                const title = document.getElementById('subpageTitle').value.trim();
-                if (title) sessionStorage.setItem(`subpageTitle_${group}_${idx}`, title);
-                ensureListContains(idx);
+
+                window.subpageStorage.saveSubpage(group, name, data);
+                const names = window.subpageStorage.getSubpageNames(group);
+                sessionStorage.setItem(`subpages_${group}_names`, JSON.stringify(names));
+
                 window.location.href = 'Energieverteilung.html';
             });
 
