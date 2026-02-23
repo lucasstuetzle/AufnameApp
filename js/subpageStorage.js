@@ -36,11 +36,23 @@
         const prefix = getPrefix(group);
         if (!key.startsWith(prefix + '_')) return null;
         const rest = key.slice((prefix + '_').length);
-        const lastUnder = rest.lastIndexOf('_');
-        if (lastUnder < 0) return null;
-        const name = rest.slice(0, lastUnder).replace(/_/g, ' ');
-        const field = storageKeyToField(rest.slice(lastUnder + 1));
-        return { name, field };
+        
+        // Try to match against known field names to find boundary
+        let fieldGroups = window.fieldGroups;
+        if (!fieldGroups || !fieldGroups[group]) return null;
+        
+        const knownFields = fieldGroups[group];
+        for (const field of knownFields) {
+            const safField = fieldToStorageKey(field);
+            if (rest.endsWith(safField)) {
+                const nameEnd = rest.length - safField.length - 1; // -1 for separator underscore
+                if (nameEnd > 0) {
+                    const name = rest.slice(0, nameEnd).replace(/_/g, ' ');
+                    return { name, field };
+                }
+            }
+        }
+        return null;
     }
 
     function getSubpageNames(group) {
