@@ -5,16 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/AufnameApp/css/style.css">
     <script src="/AufnameApp/js/fields.js"></script>
+    <script src="/AufnameApp/js/subpageStorage.js"></script>
+    <script src="/AufnameApp/js/calculatekWinA.js"></script>
     <title>Energieversorgung — Editor</title>
 </head>
 <body>
     <h1>Energieversorgung (Unterseite)</h1>
 
     <form id="subpageForm">
-        <label for="subpageTitle">Titel (optional)</label>
-        <input type="text" id="subpageTitle">
-
-        <label for="BezeichnungEnergieversorgung">Name:</label>
+        <label for="BezeichnungEnergieversorgung">Name (erforderlich):</label>
         <input type="text" id="BezeichnungEnergieversorgung" required>
 
         <label for="Anschlussleistung kW">Anschlussleistung (kW):</label>
@@ -30,46 +29,41 @@
     <script>
         (function(){
             const params = new URLSearchParams(window.location.search);
-            const id = params.get('id');
+            const editName = params.get('name'); // for editing existing subpage
             const group = 'Energieversorgung';
             const fields = window.fieldGroups && window.fieldGroups[group] ? window.fieldGroups[group] : ['BezeichnungEnergieversorgung','Anschlussleistung kW','Anschlussleistung A'];
 
             function populate() {
-                if (!id) return; // new
-                fields.forEach(f => {
-                    const el = document.getElementById(f);
-                    if (!el) return;
-                    const v = sessionStorage.getItem(f + id);
-                    if (v !== null) el.value = v;
-                });
-                const t = sessionStorage.getItem(`subpageTitle_${group}_${id}`);
-                if (t) document.getElementById('subpageTitle').value = t;
-            }
-
-            function ensureListContains(i) {
-                const key = `subpages_${group}`;
-                const raw = sessionStorage.getItem(key);
-                const list = raw ? JSON.parse(raw) : [];
-                if (!list.includes(i)) { list.push(Number(i)); sessionStorage.setItem(key, JSON.stringify(list)); }
+                if (!editName) return; // new subpage
+                const data = window.subpageStorage.getSubpage(group, editName, fields);
+                for (const field in data) {
+                    const el = document.getElementById(field);
+                    if (el) el.value = data[field];
+                }
             }
 
             document.getElementById('saveSubpageBtn').addEventListener('click', function(){
-                let idx = id ? Number(id) : null;
-                const key = `subpages_${group}`;
-                const raw = sessionStorage.getItem(key);
-                const list = raw ? JSON.parse(raw) : [];
-                if (!idx) {
-                    idx = list.length === 0 ? 1 : (Math.max(...list.map(i=>Number(i))) + 1);
+                const nameField = document.getElementById('BezeichnungEnergieversorgung');
+                const name = nameField.value.trim();
+                if (!name) {
+                    alert('Name ist erforderlich!');
+                    return;
                 }
+
+                // collect all field values
+                const data = {};
                 fields.forEach(f => {
                     const el = document.getElementById(f);
-                    const v = el ? el.value : '';
-                    sessionStorage.setItem(f + idx, v);
+                    if (el) data[f] = el.value || '';
                 });
-                const title = document.getElementById('subpageTitle').value.trim();
-                if (title) sessionStorage.setItem(`subpageTitle_${group}_${idx}`, title);
-                ensureListContains(idx);
-                // go back to overview
+
+                // save using new structured format
+                window.subpageStorage.saveSubpage(group, name, data);
+
+                // update metadata
+                const names = window.subpageStorage.getSubpageNames(group);
+                sessionStorage.setItem(`subpages_${group}_names`, JSON.stringify(names));
+
                 window.location.href = 'Energieversorgung.html';
             });
 
