@@ -17,8 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const data = {};
 
-        // Sammle alle sessionStorage-Werte, die zu unseren bekannten Feldern gehören,
-        // inklusive nummerierter Unterseiten wie "Anzahl Ladepunkte1".
+        // Sammle alle sessionStorage-Werte: Basisfelder + strukturierte Unterseiten (z.B., EV_Name_Field)
         const baseFields = (window && window.fields) ? window.fields : [];
         for (let i = 0; i < sessionStorage.length; i++) {
             const key = sessionStorage.key(i);
@@ -27,19 +26,18 @@ document.addEventListener("DOMContentLoaded", function () {
             const trimmed = value.trim();
             if (trimmed === "") continue;
 
+            let isBaseField = false;
             for (const base of baseFields) {
                 if (key === base) {
                     data[key] = trimmed;
+                    isBaseField = true;
                     break;
                 }
-                if (key.startsWith(base)) {
-                    // remainder should be numeric index, e.g., 'Anzahl Ladepunkte2'
-                    const suffix = key.slice(base.length);
-                    if (/^\d+$/.test(suffix)) {
-                        data[key] = trimmed;
-                        break;
-                    }
-                }
+            }
+
+            // Also include structured subpage keys (EV_Name_Field, EV_dist_Name_Field)
+            if (!isBaseField && (key.startsWith('EV_') || key.startsWith('EV_dist_'))) {
+                data[key] = trimmed;
             }
         }
 
