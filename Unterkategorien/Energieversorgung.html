@@ -11,10 +11,10 @@
 	<script src="/AufnameApp/js/speicher.js"></script>
 	<!-- Schließlich createLocation.js einbinden -->
 	<script src="/AufnameApp/js/createLocation.js"></script>
-	<!-- Und calculatekWinA.js einbinden -->
-	<script src="/AufnameApp/js/calculatekWinA.js"></script>
 	<!-- Neue Speicher-Struktur für strukturierte Unterseiten -->
 	<script src="/AufnameApp/js/subpageStorage.js"></script>
+	<!-- Und calculatekWinA.js einbinden -->
+	<script src="/AufnameApp/js/calculatekWinA.js"></script>
 	
 	<title>Energieversorgung</title>
 </head>
@@ -37,6 +37,51 @@
 		const fields = window.fieldGroups && window.fieldGroups[group] ? window.fieldGroups[group] : [];
 		const createBtn = document.getElementById('createSubpageBtn');
 		const overviewContainer = document.getElementById('subpagesOverview');
+
+		// Auto-detect EV_ keys in sessionStorage and reconstruct subpage metadata
+		function detectAndCreateSubpages() {
+			const subpagesByGroup = {};
+			
+			for (let i = 0; i < sessionStorage.length; i++) {
+				const key = sessionStorage.key(i);
+				if (!key) continue;
+				
+				let currentGroup = null;
+				let rest = null;
+				
+				if (key.startsWith('EV_')) {
+					currentGroup = 'Energieversorgung';
+					rest = key.slice(3);
+				}
+				
+				if (currentGroup === group && rest && window.fieldGroups && window.fieldGroups[group]) {
+					const knownFields = window.fieldGroups[group];
+					for (const field of knownFields) {
+						const safField = field.replace(/\s+/g, '_');
+						if (rest.endsWith(safField)) {
+							const nameEnd = rest.length - safField.length - 1;
+							if (nameEnd > 0) {
+								const name = rest.slice(0, nameEnd).replace(/_/g, ' ');
+								if (!subpagesByGroup[group]) subpagesByGroup[group] = new Set();
+								subpagesByGroup[group].add(name);
+								break;
+							}
+						}
+					}
+				}
+			}
+			
+			// Store subpage metadata
+			for (const g in subpagesByGroup) {
+				const names = Array.from(subpagesByGroup[g]);
+				if (names.length > 0) {
+					sessionStorage.setItem(`subpages_${g}_names`, JSON.stringify(names));
+				}
+			}
+		}
+
+		// Auto-detect on load
+		detectAndCreateSubpages();
 
 		function render() {
 			const names = window.subpageStorage.getSubpageNames(group);
