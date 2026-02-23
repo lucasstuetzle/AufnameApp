@@ -13,6 +13,8 @@
 	<script src="/AufnameApp/js/createLocation.js"></script>
 	<!-- Und calculatekWinA.js einbinden -->
 	<script src="/AufnameApp/js/calculatekWinA.js"></script>
+	<!-- Neue Speicher-Struktur für strukturierte Unterseiten -->
+	<script src="/AufnameApp/js/subpageStorage.js"></script>
 	
 	<title>Energieversorgung</title>
 </head>
@@ -24,24 +26,64 @@
 	<button id="createSubpageBtn">Energieversorgung anlegen</button>
 	<div id="subpagesOverview" class="subpages-overview"></div>
 
-	<script src="/AufnameApp/js/subpages.js"></script>
-	<script>
-		document.addEventListener('DOMContentLoaded', function () {
-			// init generic manager for Energieversorgung
-			if (window.fieldGroups && window.fieldGroups.Energieversorgung) {
-				window.initSubpageManager({
-					group: 'Energieversorgung',
-					fields: window.fieldGroups.Energieversorgung,
-					summaryFields: ['Anschlussleistung kW']
-				});
-			}
-		});
-	</script>
-
 	<!-- Button zurück zur Hauptseite -->
 	
 <button onclick="window.location.href='Standort.html'">Zurück zu Standort</button>
 <button id="downloadLocationButton" data-download="true">Standort speichern</button>	
+
+<script>
+	document.addEventListener('DOMContentLoaded', function () {
+		const group = 'Energieversorgung';
+		const fields = window.fieldGroups && window.fieldGroups[group] ? window.fieldGroups[group] : [];
+		const createBtn = document.getElementById('createSubpageBtn');
+		const overviewContainer = document.getElementById('subpagesOverview');
+
+		function render() {
+			const names = window.subpageStorage.getSubpageNames(group);
+			overviewContainer.innerHTML = '';
+			if (names.length === 0) {
+				overviewContainer.textContent = 'Keine Unterseiten vorhanden.';
+				return;
+			}
+			const ul = document.createElement('ul');
+			names.forEach(name => {
+				const li = document.createElement('li');
+				const data = window.subpageStorage.getSubpage(group, name, fields);
+				const summary = `${name} — kW: ${data['Anschlussleistung kW'] || '-'} A: ${data['Anschlussleistung A'] || '-'}`;
+				li.textContent = summary;
+
+				const editLink = document.createElement('a');
+				editLink.textContent = 'Bearbeiten';
+				editLink.href = `Energieversorgung_edit.html?name=${encodeURIComponent(name)}`;
+				editLink.style.marginLeft = '8px';
+
+				const delBtn = document.createElement('button');
+				delBtn.textContent = 'Löschen';
+				delBtn.addEventListener('click', () => {
+					if (confirm(`Energieversorgung "${name}" wirklich löschen?`)) {
+						window.subpageStorage.deleteSubpage(group, name, fields);
+						const updatedNames = window.subpageStorage.getSubpageNames(group);
+						sessionStorage.setItem(`subpages_${group}_names`, JSON.stringify(updatedNames));
+						render();
+					}
+				});
+
+				li.appendChild(document.createTextNode(' '));
+				li.appendChild(editLink);
+				li.appendChild(document.createTextNode(' '));
+				li.appendChild(delBtn);
+				ul.appendChild(li);
+			});
+			overviewContainer.appendChild(ul);
+		}
+
+		createBtn.addEventListener('click', () => {
+			window.location.href = 'Energieversorgung_edit.html';
+		});
+
+		render();
+	});
+</script>
 	
 	
 	
