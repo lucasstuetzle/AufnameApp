@@ -49,10 +49,8 @@
 			names.forEach(name => {
 				const li = document.createElement('li');
 				const data = window.subpageStorage.getSubpage(group, name, fields);
-				const summary = `${name} — kW: ${data['Anschlussleistung kW'] || '-'} A: ${data['Anschlussleistung A'] || '-'}`;
-				li.textContent = summary;
-
-				const editLink = document.createElement('a');
+			const kw = data['Anschlussleistung kW'] || '-';
+			const summary = `${name} — ${kw} kW`;
 				editLink.textContent = 'Bearbeiten';
 				editLink.href = `Energieversorgung_edit.html?name=${encodeURIComponent(name)}`;
 				editLink.style.marginLeft = '8px';
