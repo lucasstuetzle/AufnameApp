@@ -1,45 +1,82 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="/AufnameApp/css/style.css">
+	<script src="/AufnameApp/js/fields.js"></script>
+	<script src="/AufnameApp/js/speicher.js"></script>
+	<script src="/AufnameApp/js/createLocation.js"></script>
+	<script src="/AufnameApp/js/subpageStorage.js"></script>
+	
+	<title>Energieverteilung</title>
+
+    <script src="/AufnameApp/js/Berechnung-kWh.js"></script>
+    <script src="/AufnameApp/js/Berechnung-Ladepunkte.js"></script>
+</head>
+<body>
+    <h1>Energieverteilung</h1>
+    <p>Übersicht der Energieverteilungen (Unterseiten)</p>
+
     <button id="createSubpageBtn">Energieverteilung anlegen</button>
     <div id="subpagesOverview" class="subpages-overview"></div>
 
-    <script src="/AufnameApp/js/subpages.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            if (window.fieldGroups && window.fieldGroups.Energieverteilung) {
-                window.initSubpageManager({
-                    group: 'Energieverteilung',
-                    fields: window.fieldGroups.Energieverteilung,
-                    summaryFields: ['Anzahl Ladepunkte']
-                });
-            }
-        });
-    </script>
-
 <button onclick="window.location.href='Standort.html'">Zurück zu Standort</button>
 <button id="downloadLocationButton" data-download="true">Standort speichern</button>
-        <input type="range" id="lpSlider" min="0.1" max="1" step="0.1" value="1">
-        <span id="lpSliderValue">1</span>
 
-        <!-- Ausgabe: Notwendige Energie -->
-        <label for="requiredEnergy">Notwendige Energie (kW):</label>
-        <input type="text" id="requiredEnergy" readonly>
+<script>
+	document.addEventListener('DOMContentLoaded', function () {
+		const group = 'Energieverteilung';
+		const fields = window.fieldGroups && window.fieldGroups[group] ? window.fieldGroups[group] : [];
+		const createBtn = document.getElementById('createSubpageBtn');
+		const overviewContainer = document.getElementById('subpagesOverview');
 
-        
+		function render() {
+			const names = window.subpageStorage.getSubpageNames(group);
+			overviewContainer.innerHTML = '';
+			if (names.length === 0) {
+				overviewContainer.textContent = 'Keine Unterseiten vorhanden.';
+				return;
+			}
+			const ul = document.createElement('ul');
+			names.forEach(name => {
+				const li = document.createElement('li');
+				const data = window.subpageStorage.getSubpage(group, name, fields);
+				const summary = `${name} — Ladepunkte: ${data['Anzahl Ladepunkte'] || '-'}`;
+				li.textContent = summary;
 
+				const editLink = document.createElement('a');
+				editLink.textContent = 'Bearbeiten';
+				editLink.href = `Energieverteilung_edit.html?name=${encodeURIComponent(name)}`;
+				editLink.style.marginLeft = '8px';
 
+				const delBtn = document.createElement('button');
+				delBtn.textContent = 'Löschen';
+				delBtn.addEventListener('click', () => {
+					if (confirm(`Energieverteilung "${name}" wirklich löschen?`)) {
+						window.subpageStorage.deleteSubpage(group, name, fields);
+						const updatedNames = window.subpageStorage.getSubpageNames(group);
+						sessionStorage.setItem(`subpages_${group}_names`, JSON.stringify(updatedNames));
+						render();
+					}
+				});
 
+				li.appendChild(document.createTextNode(' '));
+				li.appendChild(editLink);
+				li.appendChild(document.createTextNode(' '));
+				li.appendChild(delBtn);
+				ul.appendChild(li);
+			});
+			overviewContainer.appendChild(ul);
+		}
 
+		createBtn.addEventListener('click', () => {
+			window.location.href = 'Energieverteilung_edit.html';
+		});
 
-    </form>
-
-<div class="subpage-controls">
-    <input type="text" id="subpageTitle" placeholder="Unterseitentitel (optional)">
-    <button id="addSubpageBtn">Neue Unterseite anlegen</button>
-</div>
-
-<div id="subpagesList" class="subpages-list"></div>
-
-<button onclick="window.location.href='Standort.html'">Zurück zu Standort</button>
-<button id="downloadLocationButton" data-download="true">Standort speichern</button>
+		render();
+	});
+</script>
 
 </body>
 </html>
