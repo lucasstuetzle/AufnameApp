@@ -32,8 +32,11 @@
 	<label for="author">Autor</label>
 	<input type="text" id="author" required>
 
-    <!-- Hidden upload input: Übersicht/andere Seiten können diese auslösen -->
-    <input type="file" id="uploadJsonStandort" accept="application/json" style="display:none">
+    <!-- Upload JSON input -->
+    <div style="margin-top: 12px; margin-bottom: 12px;">
+        <label for="uploadJsonStandort">Bestehende Datei importieren:</label>
+        <input type="file" id="uploadJsonStandort" accept="application/json">
+    </div>
 	<!-- Upload-Steuerelement wird auf der Übersichtsseite getriggert; entfernt -->
 
 	<div style="margin-top:12px;">
@@ -109,25 +112,38 @@ document.addEventListener('DOMContentLoaded', function() {
 					}
 
 					// Reconstruct subpages from new format (EV_Name_Field, EV_dist_Name_Field)
-					// Scan JSON for EV_* and EV_dist_* keys and group by name
+					// Scan JSON for EV_* and EV_dist_* keys and extract unique names per group
 					const subpagesByGroup = {};
 					for (const jsonKey in data) {
-						if (jsonKey.startsWith('EV_')) {
-							let group = 'Energieversorgung';
-							let rest = jsonKey.slice(3); // remove 'EV_'
-							if (jsonKey.startsWith('EV_dist_')) {
-								group = 'Energieverteilung';
-								rest = jsonKey.slice(8); // remove 'EV_dist_'
-							}
-							if (!subpagesByGroup[group]) subpagesByGroup[group] = new Set();
-							// rest = "Name_Field..." → extract name
-							const lastUnder = rest.lastIndexOf('_');
-							if (lastUnder > 0) {
-								const name = rest.slice(0, lastUnder).replace(/_/g, ' ');
-								subpagesByGroup[group].add(name);
+						let group = null;
+						let rest = null;
+						
+						if (jsonKey.startsWith('EV_dist_')) {
+							group = 'Energieverteilung';
+							rest = jsonKey.slice(8); // remove 'EV_dist_'
+						} else if (jsonKey.startsWith('EV_')) {
+							group = 'Energieversorgung';
+							rest = jsonKey.slice(3); // remove 'EV_'
+						}
+						
+						if (group && rest && window.fieldGroups && window.fieldGroups[group]) {
+							// Try to match field names to find name/field boundary
+							const knownFields = window.fieldGroups[group];
+							for (const field of knownFields) {
+								const safField = field.replace(/\s+/g, '_');
+								if (rest.endsWith(safField)) {
+									const nameEnd = rest.length - safField.length - 1; // -1 for separator _
+									if (nameEnd > 0) {
+										const name = rest.slice(0, nameEnd).replace(/_/g, ' ');
+										if (!subpagesByGroup[group]) subpagesByGroup[group] = new Set();
+										subpagesByGroup[group].add(name);
+										break;
+									}
+								}
 							}
 						}
 					}
+					
 					// Store subpage metadata (names per group)
 					for (const group in subpagesByGroup) {
 						const names = Array.from(subpagesByGroup[group]);
