@@ -20,6 +20,17 @@ const fieldGroups = {
 		"Anschlussleistung kW",
 		"Anschlussleistung A"
 	]
+,
+	Energieverteilung: [
+		"supply",
+		"capacity",
+		"time",
+		"energy",
+		"Anzahl Ladepunkte",
+		"lpMode",
+		"lpSlider",
+		"requiredEnergy"
+	]
 };
 
 // Flache Liste für Abwärtskompatibilität
