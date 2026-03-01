@@ -41,10 +41,17 @@
 <p>
 
 <button id="downloadLocationButton" data-download="true">Standort speichern</button>
-<button onclick="window.location.href='../index.html'">Zurück</button>
+<button id="backButton" onclick="confirmAndClear()">Zurück</button>
 	
 </body>
 <script>
+function confirmAndClear() {
+    if (confirm('Möchten Sie wirklich zurückgehen? Alle Daten werden gelöscht.')) {
+        sessionStorage.clear();
+        window.location.href = '../index.html';
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
 	// Auto-detect EV_ keys in sessionStorage and reconstruct subpage metadata
 	function detectAndCreateSubpages() {
