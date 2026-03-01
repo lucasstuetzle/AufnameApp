@@ -38,7 +38,7 @@
 		<button onclick="window.location.href='Energieverteilung.html'">Energieverteilung</button>
 	</div>
 
-<p>
+<p></p>
 
 <button id="downloadLocationButton" data-download="true">Standort speichern</button>
 <button id="backButton" onclick="confirmAndClear()">Zurück</button>
@@ -47,7 +47,13 @@
 <script>
 function confirmAndClear() {
     if (confirm('Möchten Sie wirklich zurückgehen? Alle Daten werden gelöscht.')) {
+        console.log('confirmAndClear: current keys', Object.keys(sessionStorage));
         sessionStorage.clear();
+        console.log('confirmAndClear: after clear', Object.keys(sessionStorage));
+        // also remove any leftover items just in case
+        for (let i = sessionStorage.length - 1; i >= 0; i--) {
+            sessionStorage.removeItem(sessionStorage.key(i));
+        }
         window.location.href = '../index.html';
     }
 }
