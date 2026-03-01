@@ -41,11 +41,13 @@
 <p></p>
 
 <button id="downloadLocationButton" data-download="true">Standort speichern</button>
-<button id="backButton" onclick="confirmAndClear()">Zurück</button>
+<button id="backButton" onclick="confirmAndClear()">Zurück1</button>
 	
-</body>
 <script>
+console.log('Standort script loaded');
+
 function confirmAndClear() {
+    console.log('confirmAndClear called');
     if (confirm('Möchten Sie wirklich zurückgehen? Alle Daten werden gelöscht.')) {
         console.log('confirmAndClear: current keys', Object.keys(sessionStorage));
         sessionStorage.clear();
@@ -55,10 +57,13 @@ function confirmAndClear() {
             sessionStorage.removeItem(sessionStorage.key(i));
         }
         window.location.href = '../index.html';
+    } else {
+        console.log('confirmAndClear: user cancelled');
     }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+	console.log('DOMContentLoaded handler running');
 	// Auto-detect EV_ keys in sessionStorage and reconstruct subpage metadata
 	function detectAndCreateSubpages() {
 		const subpagesByGroup = {};
@@ -116,3 +121,5 @@ document.addEventListener('DOMContentLoaded', function() {
 	});
 });
 </script>
+</body>
+</html>
